@@ -1,0 +1,24 @@
+$date
+     Jun 11, 2020       11:34:39
+$end
+
+$version
+ SystemC 2.3.3-Accellera --- Jun  8 2020 15:53:52
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+$end
+
+#100000

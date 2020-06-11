@@ -14,7 +14,7 @@ SC_MODULE(Postprocess) {
             Output Ports
     ============================================================
 */
-    sc_out<sc_uint<32> > output;
+    sc_out<sc_uint<32> > output[7];
 
     void run_Postprocess();
     

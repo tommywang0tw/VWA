@@ -5,15 +5,15 @@ int sc_main(int argc, char *argv[]){
 
     sc_signal<sc_uint<32> > input[7];
     sc_signal<sc_uint<32> > bias;
-    sc_signal<sc_uint<32> > output;
+    sc_signal<sc_uint<32> > output[7];
 
     Postprocess Postprocess("Postprocess");
 
     for(int i = 0; i < 7; i++) {
         Postprocess.input[i](input[i]); 
+        Postprocess.output[i](output[i]);
     }
     Postprocess.bias(bias); 
-    Postprocess.output(output);
 
     sc_trace_file *tf = sc_create_vcd_trace_file("RESULT");
 
@@ -26,7 +26,11 @@ int sc_main(int argc, char *argv[]){
     bias = 1;
     
     sc_start(100,SC_NS);
-    std::cout << "Postprocess.output " << Postprocess.output << std::endl;
+    for (size_t i = 0; i < 7; i++)
+    {
+        std::cout << "output[" << i << "]=" << output[i].read() << std::endl;
+    }
+    
     sc_close_vcd_trace_file(tf); 
 
     return (0);

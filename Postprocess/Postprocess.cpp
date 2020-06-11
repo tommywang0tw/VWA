@@ -1,15 +1,15 @@
 #include "Postprocess.h"
 
+int Relu(int result) {
+    return result = result < 0 ? 0 : result;
+}
 
 void Postprocess::run_Postprocess(){
-    int sum = 0;
-    for(int i=0; i< 7; i++) {
-        sum = sum + input[i].read();
+    int result[7] = {0};
+    for(int i = 0; i < 7; i++) {
+        result[i]=Relu(input[i].read()+bias.read());
         std::cout << "input[" << i << "]=" << input[i] << std::endl;
+        output[i].write(result[i]);
     }
-    std::cout << "sum before " << sum << std::endl;
-    sum = sum < 0 ? 0 : sum;
-    sum = sum + bias.read();
-    std::cout << "sum after " << sum << std::endl;
-    output.write(sum);
+    
 }
