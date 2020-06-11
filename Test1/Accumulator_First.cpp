@@ -20,7 +20,7 @@ void ACCUMULATOR_FIRST::run_Accumulator(){
         // }
 
         sr_index_reg.write(sr_index.read());
-        ctrl_reg.write(ctrl.read());
+        ctrl_reg.write(ctrl_stage1.read());
         //add input registers with one of the shift registers chosen by ctrl
         for(int i=0; i<BUFFER_NUM; i++) {
             int out = shift_regs[i][ctrl_reg.read()].read() + input[i].read();

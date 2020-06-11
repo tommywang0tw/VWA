@@ -1,5 +1,6 @@
 #include "PE.h"
 #include "Accumulator_First.h"
+#include "Controller.h"
 #include "systemc.h"
 
 int sc_main(int argc, char *argv[]){
@@ -24,12 +25,17 @@ int sc_main(int argc, char *argv[]){
     sc_signal<bool> rst;
     sc_clock clk("clock", clkPrd, 0.50);
 
-    sc_signal<sc_uint<32> > ctrl;
+    sc_signal<sc_uint<32> > ctrl_stage1;
     sc_signal<sc_uint<32> > output[BUFFER_NUM];
     sc_signal<sc_uint<32> > sr_index;
 
-     PE pe("PE");
+    PE pe("PE");
     ACCUMULATOR_FIRST Accumulator_First("ACCUMULATOR_FIRST");
+    CONTROLLER Controller("CONTROLLER");
+
+    Controller.clk(clk); 
+    Controller.rst(rst); 
+    Controller.signal_stage1(ctrl_stage1);
 
     //bind ports
     for(int i = 0; i < 7; i++)
@@ -43,7 +49,7 @@ int sc_main(int argc, char *argv[]){
         Accumulator_First.input[i](buffer[i]);
         Accumulator_First.output[i](output[i]);
     }
-    Accumulator_First.ctrl(ctrl);
+    Accumulator_First.ctrl_stage1(ctrl_stage1);
     Accumulator_First.clk(clk);
     Accumulator_First.rst(rst);
     Accumulator_First.sr_index(sr_index);
@@ -109,9 +115,9 @@ int sc_main(int argc, char *argv[]){
     sc_trace(tf, Accumulator_First.output_regs[7], "output_regs(7)");
     sc_trace(tf, Accumulator_First.output_regs[8], "output_regs(8)");
 
-    //trace ctrl, rst signal
+    //trace ctrl_stage1, rst signal
     sc_trace(tf, Accumulator_First.rst, "rst");
-    sc_trace(tf, Accumulator_First.ctrl, "ctrl");
+    sc_trace(tf, Accumulator_First.ctrl_stage1, "ctrl_stage1");
 
     //trace shift registers
     sc_trace(tf, Accumulator_First.shift_regs[0][0], "shift_regs(0)(0)");
@@ -145,10 +151,10 @@ int sc_main(int argc, char *argv[]){
     sc_trace(tf, Accumulator_First.sr_index, "sr_index");
     sc_trace(tf, Accumulator_First.sr_index_reg, "sr_index_reg");
 
-
+    sc_trace(tf, Controller.signal_stage1 ,"signal_stage1");
 
     rst.write(false);
-    ctrl.write(0);
+    ctrl_stage1.write(0);
     sc_start(10,SC_NS);
     rst.write(true);
 
@@ -159,12 +165,12 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][0]);
     sr_index.write(0);
-    ctrl.write(0);
+    ctrl_stage1.write(0);
     sc_start(10,SC_NS);
 
     // for(int i=0; i<9; i++) {
     //     buffer[i].write(1);
-    //     ctrl.write(0);
+    //     ctrl_stage1.write(0);
     // }
 
     //cycle 2:
@@ -174,20 +180,20 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][0]);
     sr_index.write(1);
-    ctrl.write(1);
+    ctrl_stage1.write(1);
     sc_start(10,SC_NS);
 
 
 
     //cycle 3:
-    ctrl.write(1);
+    ctrl_stage1.write(1);
     //given input and weight
     for(int i = 0; i < 7; i++)
         input[i].write(input_matrix[i][1]);
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][1]);
     sr_index.write(0);
-    ctrl.write(0);
+    ctrl_stage1.write(0);
     sc_start(10,SC_NS);
 
     //cycle 4:
@@ -197,7 +203,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][0]);
     sr_index.write(2);
-    ctrl.write(2);
+    ctrl_stage1.write(2);
     sc_start(10,SC_NS);
 
     //cycle 5:
@@ -207,7 +213,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][1]);
     sr_index.write(1);
-    ctrl.write(1);
+    ctrl_stage1.write(1);
     sc_start(10,SC_NS);
 
     //cycle 6:
@@ -217,7 +223,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][2]);
     sr_index.write(0);
-    ctrl.write(0);
+    ctrl_stage1.write(0);
     sc_start(10,SC_NS);
 
     //cycle 7:
@@ -227,7 +233,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][0]);
     sr_index.write(3);
-    ctrl.write(3);
+    ctrl_stage1.write(3);
     sc_start(10,SC_NS);
 
 
@@ -238,7 +244,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][1]);
     sr_index.write(2);
-    ctrl.write(2);
+    ctrl_stage1.write(2);
     sc_start(10,SC_NS);
 
     //cycle 9:
@@ -248,7 +254,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][2]);
     sr_index.write(1);
-    ctrl.write(1);
+    ctrl_stage1.write(1);
     sc_start(10,SC_NS);
 
     //cycle 10:
@@ -258,7 +264,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][1]);
     sr_index.write(3);
-    ctrl.write(3);
+    ctrl_stage1.write(3);
     sc_start(10,SC_NS);
 
     //cycle 11:
@@ -268,7 +274,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][2]);
     sr_index.write(2);
-    ctrl.write(2);
+    ctrl_stage1.write(2);
     sc_start(10,SC_NS);
 
     //cycle 12:
@@ -278,7 +284,7 @@ int sc_main(int argc, char *argv[]){
     for(int i = 0; i < 3; i++)
         weight[i].write(filter[i][2]);
     sr_index.write(3);
-    ctrl.write(3);
+    ctrl_stage1.write(3);
     sc_start(10,SC_NS);
 
 

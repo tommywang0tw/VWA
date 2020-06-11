@@ -11,7 +11,7 @@ SC_MODULE(ACCUMULATOR_FIRST) {
 
 /* Input Ports  */
     sc_in<sc_uint<32> > input[BUFFER_NUM]; //from 1 bank of Input SRAM
-    sc_in<sc_uint<32> > ctrl;
+    sc_in<sc_uint<32> > ctrl_stage1;
     sc_in<sc_uint<32> > sr_index;
     sc_in<bool> clk;
     sc_in<bool> rst;
