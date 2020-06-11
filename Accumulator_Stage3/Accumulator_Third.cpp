@@ -21,14 +21,14 @@ void ACCUMULATOR_THIRD::run_Accumulator(){
         }
 
         switch (ctrl_1.read()) {  //The first mux
-            case 0:
+            case 0:  //Add from SRAM
                 for(int i=0; i<BUFFER_NUM; i++) {
                     if(i<2)
                         shift_regs[i][tail].write(input_regs[i].read() + input_S[i].read());
                     else
                         shift_regs[i][tail].write(input_regs[i].read());
                 }
-            case 1:
+            case 1:  //Add from Shift Reg.
                 for(int i=0; i<BUFFER_NUM; i++) {
                     shift_regs[i][tail].write( shift_regs[i][ctrl_2.read()].read() + input_regs[i].read() );
                 }

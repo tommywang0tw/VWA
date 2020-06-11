@@ -1,0 +1,1247 @@
+$date
+     Jun 11, 2020       13:22:56
+$end
+
+$version
+ SystemC 2.3.3-Accellera --- May 21 2020 16:59:07
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$var wire   32  aaaaa  input_regs(0) [31:0]  $end
+$var wire   32  aaaab  input_regs(1) [31:0]  $end
+$var wire   32  aaaac  input_regs(2) [31:0]  $end
+$var wire   32  aaaad  input_regs(3) [31:0]  $end
+$var wire   32  aaaae  input_regs(4) [31:0]  $end
+$var wire   32  aaaaf  input_regs(5) [31:0]  $end
+$var wire   32  aaaag  input_regs(6) [31:0]  $end
+$var wire   32  aaaah  input_regs(7) [31:0]  $end
+$var wire   32  aaaai  input_regs(8) [31:0]  $end
+$var wire   32  aaaaj  output_regs(0) [31:0]  $end
+$var wire   32  aaaak  output_regs(1) [31:0]  $end
+$var wire   32  aaaal  output_regs(2) [31:0]  $end
+$var wire   32  aaaam  output_regs(3) [31:0]  $end
+$var wire   32  aaaan  output_regs(4) [31:0]  $end
+$var wire   32  aaaao  output_regs(5) [31:0]  $end
+$var wire   32  aaaap  output_regs(6) [31:0]  $end
+$var wire   32  aaaaq  output_regs(7) [31:0]  $end
+$var wire   32  aaaar  output_regs(8) [31:0]  $end
+$var wire   32  aaaas  shift_regs(0)(0) [31:0]  $end
+$var wire   32  aaaat  shift_regs(1)(0) [31:0]  $end
+$var wire   32  aaaau  shift_regs(2)(0) [31:0]  $end
+$var wire   32  aaaav  shift_regs(3)(0) [31:0]  $end
+$var wire   32  aaaaw  shift_regs(4)(0) [31:0]  $end
+$var wire   32  aaaax  shift_regs(5)(0) [31:0]  $end
+$var wire   32  aaaay  shift_regs(6)(0) [31:0]  $end
+$var wire   32  aaaaz  shift_regs(7)(0) [31:0]  $end
+$var wire   32  aaaba  shift_regs(8)(0) [31:0]  $end
+$var wire   32  aaabb  shift_regs(0)(1) [31:0]  $end
+$var wire   32  aaabc  shift_regs(1)(1) [31:0]  $end
+$var wire   32  aaabd  shift_regs(2)(1) [31:0]  $end
+$var wire   32  aaabe  shift_regs(3)(1) [31:0]  $end
+$var wire   32  aaabf  shift_regs(4)(1) [31:0]  $end
+$var wire   32  aaabg  shift_regs(5)(1) [31:0]  $end
+$var wire   32  aaabh  shift_regs(6)(1) [31:0]  $end
+$var wire   32  aaabi  shift_regs(7)(1) [31:0]  $end
+$var wire   32  aaabj  shift_regs(8)(1) [31:0]  $end
+$var wire   32  aaabk  shift_regs(0)(2) [31:0]  $end
+$var wire   32  aaabl  shift_regs(1)(2) [31:0]  $end
+$var wire   32  aaabm  shift_regs(2)(2) [31:0]  $end
+$var wire   32  aaabn  shift_regs(3)(2) [31:0]  $end
+$var wire   32  aaabo  shift_regs(4)(2) [31:0]  $end
+$var wire   32  aaabp  shift_regs(5)(2) [31:0]  $end
+$var wire   32  aaabq  shift_regs(6)(2) [31:0]  $end
+$var wire   32  aaabr  shift_regs(7)(2) [31:0]  $end
+$var wire   32  aaabs  shift_regs(8)(2) [31:0]  $end
+$var wire   32  aaabt  output(8) [31:0]  $end
+$var wire   32  aaabu  output(7) [31:0]  $end
+$var wire   32  aaabv  output(6) [31:0]  $end
+$var wire   32  aaabw  output(5) [31:0]  $end
+$var wire   32  aaabx  output(4) [31:0]  $end
+$var wire   32  aaaby  output(3) [31:0]  $end
+$var wire   32  aaabz  output(2) [31:0]  $end
+$var wire   32  aaaca  output(1) [31:0]  $end
+$var wire   32  aaacb  output(0) [31:0]  $end
+$var wire    1  aaacc  rst       $end
+$var wire   32  aaacd  ctrl [31:0]  $end
+$var wire   32  aaace  A_input(8) [31:0]  $end
+$var wire   32  aaacf  A_input(7) [31:0]  $end
+$var wire   32  aaacg  A_input(6) [31:0]  $end
+$var wire   32  aaach  A_input(5) [31:0]  $end
+$var wire   32  aaaci  A_input(4) [31:0]  $end
+$var wire   32  aaacj  A_input(3) [31:0]  $end
+$var wire   32  aaack  A_input(2) [31:0]  $end
+$var wire   32  aaacl  A_input(1) [31:0]  $end
+$var wire   32  aaacm  A_input(0) [31:0]  $end
+$var wire   32  aaacn  buffer(8) [31:0]  $end
+$var wire   32  aaaco  buffer(7) [31:0]  $end
+$var wire   32  aaacp  buffer(6) [31:0]  $end
+$var wire   32  aaacq  buffer(5) [31:0]  $end
+$var wire   32  aaacr  buffer(4) [31:0]  $end
+$var wire   32  aaacs  buffer(3) [31:0]  $end
+$var wire   32  aaact  buffer(2) [31:0]  $end
+$var wire   32  aaacu  buffer(1) [31:0]  $end
+$var wire   32  aaacv  buffer(0) [31:0]  $end
+$var wire   32  aaacw  weight(2) [31:0]  $end
+$var wire   32  aaacx  weight(1) [31:0]  $end
+$var wire   32  aaacy  weight(0) [31:0]  $end
+$var wire   32  aaacz  input(6) [31:0]  $end
+$var wire   32  aaada  input(5) [31:0]  $end
+$var wire   32  aaadb  input(4) [31:0]  $end
+$var wire   32  aaadc  input(3) [31:0]  $end
+$var wire   32  aaadd  input(2) [31:0]  $end
+$var wire   32  aaade  input(1) [31:0]  $end
+$var wire   32  aaadf  input(0) [31:0]  $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+b0 aaaaa
+b0 aaaab
+b0 aaaac
+b0 aaaad
+b0 aaaae
+b0 aaaaf
+b0 aaaag
+b0 aaaah
+b0 aaaai
+b0 aaaaj
+b0 aaaak
+b0 aaaal
+b0 aaaam
+b0 aaaan
+b0 aaaao
+b0 aaaap
+b0 aaaaq
+b0 aaaar
+b0 aaaas
+b0 aaaat
+b0 aaaau
+b0 aaaav
+b0 aaaaw
+b0 aaaax
+b0 aaaay
+b0 aaaaz
+b0 aaaba
+b0 aaabb
+b0 aaabc
+b0 aaabd
+b0 aaabe
+b0 aaabf
+b0 aaabg
+b0 aaabh
+b0 aaabi
+b0 aaabj
+b0 aaabk
+b0 aaabl
+b0 aaabm
+b0 aaabn
+b0 aaabo
+b0 aaabp
+b0 aaabq
+b0 aaabr
+b0 aaabs
+b0 aaabt
+b0 aaabu
+b0 aaabv
+b0 aaabw
+b0 aaabx
+b0 aaaby
+b0 aaabz
+b0 aaaca
+b0 aaacb
+0aaacc
+b0 aaacd
+b0 aaace
+b0 aaacf
+b0 aaacg
+b0 aaach
+b0 aaaci
+b0 aaacj
+b0 aaack
+b0 aaacl
+b0 aaacm
+b0 aaacn
+b0 aaaco
+b0 aaacp
+b0 aaacq
+b0 aaacr
+b0 aaacs
+b0 aaact
+b0 aaacu
+b0 aaacv
+b0 aaacw
+b0 aaacx
+b0 aaacy
+b0 aaacz
+b0 aaada
+b0 aaadb
+b0 aaadc
+b0 aaadd
+b0 aaade
+b0 aaadf
+$end
+
+#10000
+1aaacc
+b100101 aaace
+b10110011 aaacf
+b110011000 aaacg
+b101010000 aaach
+b100001000 aaaci
+b11000000 aaacj
+b1111000 aaack
+b110101 aaacl
+b111 aaacm
+b100101 aaacn
+b10110011 aaaco
+b110011000 aaacp
+b101010000 aaacq
+b100001000 aaacr
+b11000000 aaacs
+b1111000 aaact
+b110101 aaacu
+b111 aaacv
+b111 aaacw
+b100 aaacx
+b1 aaacy
+b100101 aaacz
+b11111 aaada
+b11001 aaadb
+b10011 aaadc
+b1101 aaadd
+b111 aaade
+b1 aaadf
+
+#20000
+b111 aaaaa
+b110101 aaaab
+b1111000 aaaac
+b11000000 aaaad
+b100001000 aaaae
+b101010000 aaaaf
+b110011000 aaaag
+b10110011 aaaah
+b100101 aaaai
+b100110 aaace
+b10111000 aaacf
+b110100100 aaacg
+b101011100 aaach
+b100010100 aaaci
+b11001100 aaacj
+b10000100 aaack
+b1000000 aaacl
+b1110 aaacm
+b100110 aaacn
+b10111000 aaaco
+b110100100 aaacp
+b101011100 aaacq
+b100010100 aaacr
+b11001100 aaacs
+b10000100 aaact
+b1000000 aaacu
+b1110 aaacv
+b100110 aaacz
+b100000 aaada
+b11010 aaadb
+b10100 aaadc
+b1110 aaadd
+b1000 aaade
+b10 aaadf
+
+#30000
+b1110 aaaaa
+b1000000 aaaab
+b10000100 aaaac
+b11001100 aaaad
+b100010100 aaaae
+b101011100 aaaaf
+b110100100 aaaag
+b10111000 aaaah
+b100110 aaaai
+b111 aaaaj
+b110101 aaaak
+b1111000 aaaal
+b11000000 aaaam
+b100001000 aaaan
+b101010000 aaaao
+b110011000 aaaap
+b10110011 aaaaq
+b100101 aaaar
+b111 aaaas
+b110101 aaaat
+b1111000 aaaau
+b11000000 aaaav
+b100001000 aaaaw
+b101010000 aaaax
+b110011000 aaaay
+b10110011 aaaaz
+b100101 aaaba
+b1001100 aaace
+b11111110 aaacf
+b1000000100 aaacg
+b110101010 aaach
+b101010000 aaaci
+b11110110 aaacj
+b10011100 aaack
+b1001010 aaacl
+b10000 aaacm
+b1001100 aaacn
+b11111110 aaaco
+b1000000100 aaacp
+b110101010 aaacq
+b101010000 aaacr
+b11110110 aaacs
+b10011100 aaact
+b1001010 aaacu
+b10000 aaacv
+b1000 aaacw
+b101 aaacx
+b10 aaacy
+
+#40000
+b10000 aaaaa
+b1001010 aaaab
+b10011100 aaaac
+b11110110 aaaad
+b101010000 aaaae
+b110101010 aaaaf
+b1000000100 aaaag
+b11111110 aaaah
+b1001100 aaaai
+b10101 aaaaj
+b1110101 aaaak
+b11111100 aaaal
+b110001100 aaaam
+b1000011100 aaaan
+b1010101100 aaaao
+b1100111100 aaaap
+b101101011 aaaaq
+b1001011 aaaar
+b10101 aaabb
+b1110101 aaabc
+b11111100 aaabd
+b110001100 aaabe
+b1000011100 aaabf
+b1010101100 aaabg
+b1100111100 aaabh
+b101101011 aaabi
+b1001011 aaabj
+b100101 aaabt
+b10110011 aaabu
+b110011000 aaabv
+b101010000 aaabw
+b100001000 aaabx
+b11000000 aaaby
+b1111000 aaabz
+b110101 aaaca
+b111 aaacb
+b100111 aaace
+b10111101 aaacf
+b110110000 aaacg
+b101101000 aaach
+b100100000 aaaci
+b11011000 aaacj
+b10010000 aaack
+b1001011 aaacl
+b10101 aaacm
+b100111 aaacn
+b10111101 aaaco
+b110110000 aaacp
+b101101000 aaacq
+b100100000 aaacr
+b11011000 aaacs
+b10010000 aaact
+b1001011 aaacu
+b10101 aaacv
+b111 aaacw
+b100 aaacx
+b1 aaacy
+b100111 aaacz
+b100001 aaada
+b11011 aaadb
+b10101 aaadc
+b1111 aaadd
+b1001 aaade
+b11 aaadf
+
+#50000
+b10101 aaaaa
+b1001011 aaaab
+b10010000 aaaac
+b11011000 aaaad
+b100100000 aaaae
+b101101000 aaaaf
+b110110000 aaaag
+b10111101 aaaah
+b100111 aaaai
+b10111 aaaaj
+b1111111 aaaak
+b100010100 aaaal
+b110110110 aaaam
+b1001011000 aaaan
+b1011111010 aaaao
+b1110011100 aaaap
+b110110001 aaaaq
+b1110001 aaaar
+b10111 aaabk
+b1111111 aaabl
+b100010100 aaabm
+b110110110 aaabn
+b1001011000 aaabo
+b1011111010 aaabp
+b1110011100 aaabq
+b110110001 aaabr
+b1110001 aaabs
+b1001011 aaabt
+b101101011 aaabu
+b1100111100 aaabv
+b1010101100 aaabw
+b1000011100 aaabx
+b110001100 aaaby
+b11111100 aaabz
+b1110101 aaaca
+b10101 aaacb
+b1001110 aaace
+b100000101 aaacf
+b1000010011 aaacg
+b110111001 aaach
+b101011111 aaaci
+b100000101 aaacj
+b10101011 aaack
+b1010111 aaacl
+b11000 aaacm
+b1001110 aaacn
+b100000101 aaaco
+b1000010011 aaacp
+b110111001 aaacq
+b101011111 aaacr
+b100000101 aaacs
+b10101011 aaact
+b1010111 aaacu
+b11000 aaacv
+b1000 aaacw
+b101 aaacx
+b10 aaacy
+
+#60000
+b11000 aaaaa
+b1010111 aaaab
+b10101011 aaaac
+b100000101 aaaad
+b101011111 aaaae
+b110111001 aaaaf
+b1000010011 aaaag
+b100000101 aaaah
+b1001110 aaaai
+b11100 aaaaj
+b10000000 aaaak
+b100001000 aaaal
+b110011000 aaaam
+b1000101000 aaaan
+b1010111000 aaaao
+b1101001000 aaaap
+b101110000 aaaaq
+b1001100 aaaar
+b11100 aaaas
+b10000000 aaaat
+b100001000 aaaau
+b110011000 aaaav
+b1000101000 aaaaw
+b1010111000 aaaax
+b1101001000 aaaay
+b101110000 aaaaz
+b1001100 aaaba
+b1110001 aaabt
+b110110001 aaabu
+b1110011100 aaabv
+b1011111010 aaabw
+b1001011000 aaabx
+b110110110 aaaby
+b100010100 aaabz
+b1111111 aaaca
+b10111 aaacb
+b1110101 aaace
+b101001101 aaacf
+b1001110110 aaacg
+b1000001010 aaach
+b110011110 aaaci
+b100110010 aaacj
+b11000110 aaack
+b1100011 aaacl
+b11011 aaacm
+b1110101 aaacn
+b101001101 aaaco
+b1001110110 aaacp
+b1000001010 aaacq
+b110011110 aaacr
+b100110010 aaacs
+b11000110 aaact
+b1100011 aaacu
+b11011 aaacv
+b1001 aaacw
+b110 aaacx
+b11 aaacy
+
+#70000
+b11011 aaaaa
+b1100011 aaaab
+b11000110 aaaac
+b100110010 aaaad
+b110011110 aaaae
+b1000001010 aaaaf
+b1001110110 aaaag
+b101001101 aaaah
+b1110101 aaaai
+b110100 aaaaj
+b11010111 aaaak
+b110110011 aaaal
+b1010011101 aaaam
+b1110000111 aaaan
+b10001110001 aaaao
+b10101011011 aaaap
+b1001110101 aaaaq
+b10011010 aaaar
+b110100 aaabb
+b11010111 aaabc
+b110110011 aaabd
+b1010011101 aaabe
+b1110000111 aaabf
+b10001110001 aaabg
+b10101011011 aaabh
+b1001110101 aaabi
+b10011010 aaabj
+b1001100 aaabt
+b101110000 aaabu
+b1101001000 aaabv
+b1010111000 aaabw
+b1000101000 aaabx
+b110011000 aaaby
+b100001000 aaabz
+b10000000 aaaca
+b11100 aaacb
+b101000 aaace
+b11000010 aaacf
+b110111100 aaacg
+b101110100 aaach
+b100101100 aaaci
+b11100100 aaacj
+b10011100 aaack
+b1010110 aaacl
+b11100 aaacm
+b101000 aaacn
+b11000010 aaaco
+b110111100 aaacp
+b101110100 aaacq
+b100101100 aaacr
+b11100100 aaacs
+b10011100 aaact
+b1010110 aaacu
+b11100 aaacv
+b111 aaacw
+b100 aaacx
+b1 aaacy
+b101000 aaacz
+b100010 aaada
+b11100 aaadb
+b10110 aaadc
+b10000 aaadd
+b1010 aaade
+b100 aaadf
+
+#80000
+b11100 aaaaa
+b1010110 aaaab
+b10011100 aaaac
+b11100100 aaaad
+b100101100 aaaae
+b101110100 aaaaf
+b110111100 aaaag
+b11000010 aaaah
+b101000 aaaai
+b110111 aaaaj
+b11100011 aaaak
+b111001110 aaaal
+b1011001010 aaaam
+b1111000110 aaaan
+b10011000010 aaaao
+b10110111110 aaaap
+b1010111101 aaaaq
+b11000001 aaaar
+b110111 aaabk
+b11100011 aaabl
+b111001110 aaabm
+b1011001010 aaabn
+b1111000110 aaabo
+b10011000010 aaabp
+b10110111110 aaabq
+b1010111101 aaabr
+b11000001 aaabs
+b10011010 aaabt
+b1001110101 aaabu
+b10101011011 aaabv
+b10001110001 aaabw
+b1110000111 aaabx
+b1010011101 aaaby
+b110110011 aaabz
+b11010111 aaaca
+b110100 aaacb
+b1010000 aaace
+b100001100 aaacf
+b1000100010 aaacg
+b111001000 aaach
+b101101110 aaaci
+b100010100 aaacj
+b10111010 aaack
+b1100100 aaacl
+b100000 aaacm
+b1010000 aaacn
+b100001100 aaaco
+b1000100010 aaacp
+b111001000 aaacq
+b101101110 aaacr
+b100010100 aaacs
+b10111010 aaact
+b1100100 aaacu
+b100000 aaacv
+b1000 aaacw
+b101 aaacx
+b10 aaacy
+
+#90000
+b100000 aaaaa
+b1100100 aaaab
+b10111010 aaaac
+b100010100 aaaad
+b101101110 aaaae
+b111001000 aaaaf
+b1000100010 aaaag
+b100001100 aaaah
+b1010000 aaaai
+b111000 aaaaj
+b11010110 aaaak
+b110100100 aaaal
+b1001111100 aaaam
+b1101010100 aaaan
+b10000101100 aaaao
+b10100000100 aaaap
+b1000110010 aaaaq
+b1110100 aaaar
+b111000 aaaas
+b11010110 aaaat
+b110100100 aaaau
+b1001111100 aaaav
+b1101010100 aaaaw
+b10000101100 aaaax
+b10100000100 aaaay
+b1000110010 aaaaz
+b1110100 aaaba
+b11000001 aaabt
+b1010111101 aaabu
+b10110111110 aaabv
+b10011000010 aaabw
+b1111000110 aaabx
+b1011001010 aaaby
+b111001110 aaabz
+b11100011 aaaca
+b110111 aaacb
+b1111000 aaace
+b101010110 aaacf
+b1010001000 aaacg
+b1000011100 aaach
+b110110000 aaaci
+b101000100 aaacj
+b11011000 aaack
+b1110010 aaacl
+b100100 aaacm
+b1111000 aaacn
+b101010110 aaaco
+b1010001000 aaacp
+b1000011100 aaacq
+b110110000 aaacr
+b101000100 aaacs
+b11011000 aaact
+b1110010 aaacu
+b100100 aaacv
+b1001 aaacw
+b110 aaacx
+b11 aaacy
+
+#100000
+b100100 aaaaa
+b1110010 aaaab
+b11011000 aaaac
+b101000100 aaaad
+b110110000 aaaae
+b1000011100 aaaaf
+b1010001000 aaaag
+b101010110 aaaah
+b1111000 aaaai
+b1011000 aaaaj
+b100111010 aaaak
+b1001011110 aaaal
+b1110010000 aaaam
+b10011000010 aaaan
+b10111110100 aaaao
+b11100100110 aaaap
+b1100111110 aaaaq
+b11000100 aaaar
+b1011000 aaabb
+b100111010 aaabc
+b1001011110 aaabd
+b1110010000 aaabe
+b10011000010 aaabf
+b10111110100 aaabg
+b11100100110 aaabh
+b1100111110 aaabi
+b11000100 aaabj
+b1110100 aaabt
+b1000110010 aaabu
+b10100000100 aaabv
+b10000101100 aaabw
+b1101010100 aaabx
+b1001111100 aaaby
+b110100100 aaabz
+b11010110 aaaca
+b111000 aaacb
+b1010010 aaace
+b100010011 aaacf
+b1000110001 aaacg
+b111010111 aaach
+b101111101 aaaci
+b100100011 aaacj
+b11001001 aaack
+b1110001 aaacl
+b101000 aaacm
+b1010010 aaacn
+b100010011 aaaco
+b1000110001 aaacp
+b111010111 aaacq
+b101111101 aaacr
+b100100011 aaacs
+b11001001 aaact
+b1110001 aaacu
+b101000 aaacv
+b1000 aaacw
+b101 aaacx
+b10 aaacy
+b101001 aaacz
+b100011 aaada
+b11101 aaadb
+b10111 aaadc
+b10001 aaadd
+b1011 aaade
+b101 aaadf
+
+#110000
+b101000 aaaaa
+b1110001 aaaab
+b11001001 aaaac
+b100100011 aaaad
+b101111101 aaaae
+b111010111 aaaaf
+b1000110001 aaaag
+b100010011 aaaah
+b1010010 aaaai
+b1011100 aaaaj
+b101001000 aaaak
+b1001111100 aaaal
+b1111000000 aaaam
+b10100000100 aaaan
+b11001001000 aaaao
+b11110001100 aaaap
+b1110001000 aaaaq
+b11101100 aaaar
+b1011100 aaabk
+b101001000 aaabl
+b1001111100 aaabm
+b1111000000 aaabn
+b10100000100 aaabo
+b11001001000 aaabp
+b11110001100 aaabq
+b1110001000 aaabr
+b11101100 aaabs
+b11000100 aaabt
+b1100111110 aaabu
+b11100100110 aaabv
+b10111110100 aaabw
+b10011000010 aaabx
+b1110010000 aaaby
+b1001011110 aaabz
+b100111010 aaaca
+b1011000 aaacb
+b1111011 aaace
+b101011111 aaacf
+b1010011010 aaacg
+b1000101110 aaach
+b111000010 aaaci
+b101010110 aaacj
+b11101010 aaack
+b10000001 aaacl
+b101101 aaacm
+b1111011 aaacn
+b101011111 aaaco
+b1010011010 aaacp
+b1000101110 aaacq
+b111000010 aaacr
+b101010110 aaacs
+b11101010 aaact
+b10000001 aaacu
+b101101 aaacv
+b1001 aaacw
+b110 aaacx
+b11 aaacy
+
+#120000
+b101101 aaaaa
+b10000001 aaaab
+b11101010 aaaac
+b101010110 aaaad
+b111000010 aaaae
+b1000101110 aaaaf
+b1010011010 aaaag
+b101011111 aaaah
+b1111011 aaaai
+b1100000 aaaaj
+b101000111 aaaak
+b1001101101 aaaal
+b1110011111 aaaam
+b10011010001 aaaan
+b11000000011 aaaao
+b11100110101 aaaap
+b1101000101 aaaaq
+b11000110 aaaar
+b1100000 aaaas
+b101000111 aaaat
+b1001101101 aaaau
+b1110011111 aaaav
+b10011010001 aaaaw
+b11000000011 aaaax
+b11100110101 aaaay
+b1101000101 aaaaz
+b11000110 aaaba
+b11101100 aaabt
+b1110001000 aaabu
+b11110001100 aaabv
+b11001001000 aaabw
+b10100000100 aaabx
+b1111000000 aaaby
+b1001111100 aaabz
+b101001000 aaaca
+b1011100 aaacb
+b1111110 aaace
+b101101000 aaacf
+b1010101100 aaacg
+b1001000000 aaach
+b111010100 aaaci
+b101101000 aaacj
+b11111100 aaack
+b10010000 aaacl
+b110110 aaacm
+b1111110 aaacn
+b101101000 aaaco
+b1010101100 aaacp
+b1001000000 aaacq
+b111010100 aaacr
+b101101000 aaacs
+b11111100 aaact
+b10010000 aaacu
+b110110 aaacv
+b101010 aaacz
+b100100 aaada
+b11110 aaadb
+b11000 aaadc
+b10010 aaadd
+b1100 aaade
+b110 aaadf
+
+#130000
+b110110 aaaaa
+b10010000 aaaab
+b11111100 aaaac
+b101101000 aaaad
+b111010100 aaaae
+b1001000000 aaaaf
+b1010101100 aaaag
+b101101000 aaaah
+b1111110 aaaai
+b10001101 aaaaj
+b111001000 aaaak
+b1101010111 aaaal
+b10011110101 aaaam
+b11010010011 aaaan
+b100000110001 aaaao
+b100111001111 aaaap
+b10010100100 aaaaq
+b101000001 aaaar
+b10001101 aaabb
+b111001000 aaabc
+b1101010111 aaabd
+b10011110101 aaabe
+b11010010011 aaabf
+b100000110001 aaabg
+b100111001111 aaabh
+b10010100100 aaabi
+b101000001 aaabj
+b11000110 aaabt
+b1101000101 aaabu
+b11100110101 aaabv
+b11000000011 aaabw
+b10011010001 aaabx
+b1110011111 aaaby
+b1001101101 aaabz
+b101000111 aaaca
+b1100000 aaacb
+
+#140000
+b10010110 aaaaj
+b111010111 aaaak
+b1101101001 aaaal
+b10100000111 aaaam
+b11010100101 aaaan
+b100001000011 aaaao
+b100111100001 aaaap
+b10010101101 aaaaq
+b101000100 aaaar
+b10010110 aaabk
+b111010111 aaabl
+b1101101001 aaabm
+b10100000111 aaabn
+b11010100101 aaabo
+b100001000011 aaabp
+b100111100001 aaabq
+b10010101101 aaabr
+b101000100 aaabs
+b101000001 aaabt
+b10010100100 aaabu
+b100111001111 aaabv
+b100000110001 aaabw
+b11010010011 aaabx
+b10011110101 aaaby
+b1101010111 aaabz
+b111001000 aaaca
+b10001101 aaacb
+
+#150000
+b10010110 aaaas
+b111010111 aaaat
+b1101101001 aaaau
+b10100000111 aaaav
+b11010100101 aaaaw
+b100001000011 aaaax
+b100111100001 aaaay
+b10010101101 aaaaz
+b101000100 aaaba
+b101000100 aaabt
+b10010101101 aaabu
+b100111100001 aaabv
+b100001000011 aaabw
+b11010100101 aaabx
+b10100000111 aaaby
+b1101101001 aaabz
+b111010111 aaaca
+b10010110 aaacb
+
+#160000
+b11001100 aaaaj
+b1001100111 aaaak
+b10001100101 aaaal
+b11001101111 aaaam
+b100001111001 aaaan
+b101010000011 aaaao
+b110010001101 aaaap
+b11000010101 aaaaq
+b111000010 aaaar
+b11001100 aaabb
+b1001100111 aaabc
+b10001100101 aaabd
+b11001101111 aaabe
+b100001111001 aaabf
+b101010000011 aaabg
+b110010001101 aaabh
+b11000010101 aaabi
+b111000010 aaabj
+
+#170000
+b11001100 aaabk
+b1001100111 aaabl
+b10001100101 aaabm
+b11001101111 aaabn
+b100001111001 aaabo
+b101010000011 aaabp
+b110010001101 aaabq
+b11000010101 aaabr
+b111000010 aaabs
+b111000010 aaabt
+b11000010101 aaabu
+b110010001101 aaabv
+b101010000011 aaabw
+b100001111001 aaabx
+b11001101111 aaaby
+b10001100101 aaabz
+b1001100111 aaaca
+b11001100 aaacb
+
+#180000
+b11001100 aaaas
+b1001100111 aaaat
+b10001100101 aaaau
+b11001101111 aaaav
+b100001111001 aaaaw
+b101010000011 aaaax
+b110010001101 aaaay
+b11000010101 aaaaz
+b111000010 aaaba
+
+#190000
+b100000010 aaaaj
+b1011110111 aaaak
+b10101100001 aaaal
+b11111010111 aaaam
+b101001001101 aaaan
+b110011000011 aaaao
+b111100111001 aaaap
+b11101111101 aaaaq
+b1001000000 aaaar
+b100000010 aaabb
+b1011110111 aaabc
+b10101100001 aaabd
+b11111010111 aaabe
+b101001001101 aaabf
+b110011000011 aaabg
+b111100111001 aaabh
+b11101111101 aaabi
+b1001000000 aaabj
+
+#200000
+b100000010 aaabk
+b1011110111 aaabl
+b10101100001 aaabm
+b11111010111 aaabn
+b101001001101 aaabo
+b110011000011 aaabp
+b111100111001 aaabq
+b11101111101 aaabr
+b1001000000 aaabs
+b1001000000 aaabt
+b11101111101 aaabu
+b111100111001 aaabv
+b110011000011 aaabw
+b101001001101 aaabx
+b11111010111 aaaby
+b10101100001 aaabz
+b1011110111 aaaca
+b100000010 aaacb
+
+#210000
+b100000010 aaaas
+b1011110111 aaaat
+b10101100001 aaaau
+b11111010111 aaaav
+b101001001101 aaaaw
+b110011000011 aaaax
+b111100111001 aaaay
+b11101111101 aaaaz
+b1001000000 aaaba
+
+#220000
+b100111000 aaaaj
+b1110000111 aaaak
+b11001011101 aaaal
+b100100111111 aaaam
+b110000100001 aaaan
+b111100000011 aaaao
+b1000111100101 aaaap
+b100011100101 aaaaq
+b1010111110 aaaar
+b100111000 aaabb
+b1110000111 aaabc
+b11001011101 aaabd
+b100100111111 aaabe
+b110000100001 aaabf
+b111100000011 aaabg
+b1000111100101 aaabh
+b100011100101 aaabi
+b1010111110 aaabj
+
+#230000
+b100111000 aaabk
+b1110000111 aaabl
+b11001011101 aaabm
+b100100111111 aaabn
+b110000100001 aaabo
+b111100000011 aaabp
+b1000111100101 aaabq
+b100011100101 aaabr
+b1010111110 aaabs
+b1010111110 aaabt
+b100011100101 aaabu
+b1000111100101 aaabv
+b111100000011 aaabw
+b110000100001 aaabx
+b100100111111 aaaby
+b11001011101 aaabz
+b1110000111 aaaca
+b100111000 aaacb
+
+#240000
+b100111000 aaaas
+b1110000111 aaaat
+b11001011101 aaaau
+b100100111111 aaaav
+b110000100001 aaaaw
+b111100000011 aaaax
+b1000111100101 aaaay
+b100011100101 aaaaz
+b1010111110 aaaba
+
+#250000
+b101101110 aaaaj
+b10000010111 aaaak
+b11101011001 aaaal
+b101010100111 aaaam
+b110111110101 aaaan
+b1000101000011 aaaao
+b1010010010001 aaaap
+b101001001101 aaaaq
+b1100111100 aaaar
+b101101110 aaabb
+b10000010111 aaabc
+b11101011001 aaabd
+b101010100111 aaabe
+b110111110101 aaabf
+b1000101000011 aaabg
+b1010010010001 aaabh
+b101001001101 aaabi
+b1100111100 aaabj
+
+#260000
+b101101110 aaabk
+b10000010111 aaabl
+b11101011001 aaabm
+b101010100111 aaabn
+b110111110101 aaabo
+b1000101000011 aaabp
+b1010010010001 aaabq
+b101001001101 aaabr
+b1100111100 aaabs
+b1100111100 aaabt
+b101001001101 aaabu
+b1010010010001 aaabv
+b1000101000011 aaabw
+b110111110101 aaabx
+b101010100111 aaaby
+b11101011001 aaabz
+b10000010111 aaaca
+b101101110 aaacb
+
+#270000
+b101101110 aaaas
+b10000010111 aaaat
+b11101011001 aaaau
+b101010100111 aaaav
+b110111110101 aaaaw
+b1000101000011 aaaax
+b1010010010001 aaaay
+b101001001101 aaaaz
+b1100111100 aaaba
+
+#280000
+b110100100 aaaaj
+b10010100111 aaaak
+b100001010101 aaaal
+b110000001111 aaaam
+b111111001001 aaaan
+b1001110000011 aaaao
+b1011100111101 aaaap
+b101110110101 aaaaq
+b1110111010 aaaar
+b110100100 aaabb
+b10010100111 aaabc
+b100001010101 aaabd
+b110000001111 aaabe
+b111111001001 aaabf
+b1001110000011 aaabg
+b1011100111101 aaabh
+b101110110101 aaabi
+b1110111010 aaabj
+
+#290000
+b110100100 aaabk
+b10010100111 aaabl
+b100001010101 aaabm
+b110000001111 aaabn
+b111111001001 aaabo
+b1001110000011 aaabp
+b1011100111101 aaabq
+b101110110101 aaabr
+b1110111010 aaabs
+b1110111010 aaabt
+b101110110101 aaabu
+b1011100111101 aaabv
+b1001110000011 aaabw
+b111111001001 aaabx
+b110000001111 aaaby
+b100001010101 aaabz
+b10010100111 aaaca
+b110100100 aaacb
+
+#300000
+b110100100 aaaas
+b10010100111 aaaat
+b100001010101 aaaau
+b110000001111 aaaav
+b111111001001 aaaaw
+b1001110000011 aaaax
+b1011100111101 aaaay
+b101110110101 aaaaz
+b1110111010 aaaba
+
+#310000
+b111011010 aaaaj
+b10100110111 aaaak
+b100101010001 aaaal
+b110101110111 aaaam
+b1000110011101 aaaan
+b1010111000011 aaaao
+b1100111101001 aaaap
+b110100011101 aaaaq
+b10000111000 aaaar
+b111011010 aaabb
+b10100110111 aaabc
+b100101010001 aaabd
+b110101110111 aaabe
+b1000110011101 aaabf
+b1010111000011 aaabg
+b1100111101001 aaabh
+b110100011101 aaabi
+b10000111000 aaabj
+
+#320000
+b111011010 aaabk
+b10100110111 aaabl
+b100101010001 aaabm
+b110101110111 aaabn
+b1000110011101 aaabo
+b1010111000011 aaabp
+b1100111101001 aaabq
+b110100011101 aaabr
+b10000111000 aaabs
+b10000111000 aaabt
+b110100011101 aaabu
+b1100111101001 aaabv
+b1010111000011 aaabw
+b1000110011101 aaabx
+b110101110111 aaaby
+b100101010001 aaabz
+b10100110111 aaaca
+b111011010 aaacb
+
+#330000
