@@ -19,14 +19,13 @@ void ACCUMULATOR_FIRST::run_Accumulator(){
         //     std::cout << input[i] << " gg" << input_regs[i].read() << sc_time_stamp() << endl;
         // }
 
-        sr_index_reg.write(sr_index.read());
         ctrl_reg.write(ctrl.read());
         //add input registers with one of the shift registers chosen by ctrl
         for(int i=0; i<BUFFER_NUM; i++) {
             int out = shift_regs[i][ctrl_reg.read()].read() + input[i].read();
             //std:cout << "out" << out <<endl;
             output_regs[i].write( out );
-            shift_regs[i][sr_index_reg.read()].write(out);
+            shift_regs[i][ctrl_reg.read()].write(out);
         }
         
         //write output register to output ports

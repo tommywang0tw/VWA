@@ -1,0 +1,110 @@
+$date
+     Jun 11, 2020       15:14:18
+$end
+
+$version
+ SystemC 2.3.3-Accellera --- May 21 2020 16:59:07
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$var wire   32  aaaaa  adder_outdata [31:0]  $end
+$var wire   32  aaaab  adder_input(8) [31:0]  $end
+$var wire   32  aaaac  adder_input(7) [31:0]  $end
+$var wire   32  aaaad  adder_input(6) [31:0]  $end
+$var wire   32  aaaae  adder_input(5) [31:0]  $end
+$var wire   32  aaaaf  adder_input(4) [31:0]  $end
+$var wire   32  aaaag  adder_input(3) [31:0]  $end
+$var wire   32  aaaah  adder_input(2) [31:0]  $end
+$var wire   32  aaaai  adder_input(1) [31:0]  $end
+$var wire   32  aaaaj  adder_input(0) [31:0]  $end
+$var wire   32  aaaak  buffer(8) [31:0]  $end
+$var wire   32  aaaal  buffer(7) [31:0]  $end
+$var wire   32  aaaam  buffer(6) [31:0]  $end
+$var wire   32  aaaan  buffer(5) [31:0]  $end
+$var wire   32  aaaao  buffer(4) [31:0]  $end
+$var wire   32  aaaap  buffer(3) [31:0]  $end
+$var wire   32  aaaaq  buffer(2) [31:0]  $end
+$var wire   32  aaaar  buffer(1) [31:0]  $end
+$var wire   32  aaaas  buffer(0) [31:0]  $end
+$var wire   32  aaaat  weight(2) [31:0]  $end
+$var wire   32  aaaau  weight(1) [31:0]  $end
+$var wire   32  aaaav  weight(0) [31:0]  $end
+$var wire   32  aaaaw  input(6) [31:0]  $end
+$var wire   32  aaaax  input(5) [31:0]  $end
+$var wire   32  aaaay  input(4) [31:0]  $end
+$var wire   32  aaaaz  input(3) [31:0]  $end
+$var wire   32  aaaba  input(2) [31:0]  $end
+$var wire   32  aaabb  input(1) [31:0]  $end
+$var wire   32  aaabc  input(0) [31:0]  $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+b0 aaaaa
+b0 aaaab
+b0 aaaac
+b0 aaaad
+b0 aaaae
+b0 aaaaf
+b0 aaaag
+b0 aaaah
+b0 aaaai
+b0 aaaaj
+b0 aaaak
+b0 aaaal
+b0 aaaam
+b0 aaaan
+b0 aaaao
+b0 aaaap
+b0 aaaaq
+b0 aaaar
+b0 aaaas
+b0 aaaat
+b0 aaaau
+b0 aaaav
+b0 aaaaw
+b0 aaaax
+b0 aaaay
+b0 aaaaz
+b0 aaaba
+b0 aaabb
+b0 aaabc
+$end
+
+#10000
+b1010100 aaaaa
+b111 aaaac
+b10100 aaaad
+b10001 aaaae
+b1110 aaaaf
+b1011 aaaag
+b1000 aaaah
+b101 aaaai
+b10 aaaaj
+b111 aaaal
+b10100 aaaam
+b10001 aaaan
+b1110 aaaao
+b1011 aaaap
+b1000 aaaaq
+b101 aaaar
+b10 aaaas
+b10 aaaat
+b1 aaaau
+b111 aaaaw
+b110 aaaax
+b101 aaaay
+b100 aaaaz
+b11 aaaba
+b10 aaabb
+b1 aaabc
+
+#11000
