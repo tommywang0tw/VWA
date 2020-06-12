@@ -6,7 +6,7 @@ void ACCUMULATOR_THIRD::run_Accumulator(){
     //     input_regs[i] = 0;
     // }
     for(int i=0; i< (BUFFER_NUM); i++) {
-        for(int j=0; j<SH_REG_NUM; j++) {
+        for(int j=0; j<T_SH_REG_NUM; j++) {
             shift_regs[i][j] = 0;
         }
     }
@@ -19,19 +19,21 @@ void ACCUMULATOR_THIRD::run_Accumulator(){
         //     input_regs[i].write(input_T[i].read());
         // }
 
+        ctrl1_reg.write( ctrl_1.read() );
         ctrl2_reg.write( ctrl_2.read() );
+        output_index_reg.write( ctrl2_reg.read());
 
         switch (ctrl_1.read()) {  //The first mux
-            case 0:  //Add from SRAM
+            case 0:  //Add with SRAM
                 for(int i=0; i<BUFFER_NUM; i++) {
                     if(i<2)
-                        shift_regs[i][ctrl2_reg.read()].write(input_T[i].read() + input_S[i].read());
+                        shift_regs[i][ctrl2_reg.read()].write(input_T[i].read() + input_S[i].read() + shift_regs[i][ctrl2_reg.read()].read());
                     else
-                        shift_regs[i][ctrl2_reg.read()].write(input_T[i].read());
+                        shift_regs[i][ctrl2_reg.read()].write(input_T[i].read() + shift_regs[i][ctrl_2.read()].read());
                 }
-            case 1:  //Add from Shift Reg.
+            case 1:  //Add without SRAM
                 for(int i=0; i<BUFFER_NUM; i++) {
-                    shift_regs[i][ctrl2_reg.read()].write( shift_regs[i][ctrl_2.read()].read() + input_T[i].read() );
+                    shift_regs[i][ctrl2_reg.read()].write( shift_regs[i][ctrl2_reg.read()].read() + input_T[i].read() );
                 }
             default:
                 //not possible
@@ -40,7 +42,7 @@ void ACCUMULATOR_THIRD::run_Accumulator(){
 
         //write output register to output ports
         for(int i=0; i< (BUFFER_NUM-2) ; i++) {
-            output_P[i].write( shift_regs[i][SH_REG_NUM-1].read() );
+            output_P[i].write( shift_regs[i][output_index_reg.read()].read() );
         }
     }
 }

@@ -7,7 +7,7 @@
 int sc_main(int argc, char *argv[])
 {
 
-    int input_matrix[8][7][6];
+    int input_matrix[16][7][6];
     for (int k = 0; k < 8; k++)
     {
         for (int i = 0; i < 7; i++)
@@ -22,7 +22,21 @@ int sc_main(int argc, char *argv[])
         }
     }
 
-    int filter[8][3][3];
+    for (int k = 0; k <8; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+
+                input_matrix[k+8][i][j] = 6 * i + j + 1 + k;
+            }
+            //input_matrix[i][j] = 6*i + j + 1;
+            //std::cout << input_matrix[i][j] << endl;
+        }
+    }
+
+    int filter[16][3][3];
     for (int k = 0; k < 8; k++)
     {
         for (int i = 0; i < 3; i++)
@@ -35,18 +49,30 @@ int sc_main(int argc, char *argv[])
         }
     }
 
+    for (int k = 0; k < 8; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+
+                filter[k+8][i][j] = 3 * i + j + 1 + k;
+            }
+        }
+    }
+
     sc_signal<sc_uint<32>> input[8][7], weight[8][3], buffer[8][9];
     sc_time clkPrd(10, SC_NS);
-    sc_signal<bool> rst;
+    sc_signal<bool> stage1_rst, stage3_rst;
     sc_clock clk("clock", clkPrd, 0.50);
 
-    sc_signal<sc_uint<32>> ctrl;
+    sc_signal<sc_uint<32>> ctrl; //ctrl for stage1
     sc_signal<sc_uint<32> > ctrl_1, ctrl_2; //Two control signal for two muxes
     sc_signal<sc_uint<32>> output[8][BUFFER_NUM];
     sc_signal<sc_uint<32>> t_output[BUFFER_NUM];
     sc_signal<sc_uint<32>> s_input[2]; //boundary SRAM
-    sc_out<sc_uint<32> > output_P[BUFFER_NUM-2]; // output to post process
-    sc_out<sc_uint<32> > output_S[2]; // output to boundary SRAM 
+    sc_signal<sc_uint<32> > output_P[BUFFER_NUM-2]; // output to post process
+    sc_signal<sc_uint<32> > output_S[2]; // output to boundary SRAM 
 
     PE pe1("PE1");
     PE pe2("PE2");
@@ -128,35 +154,37 @@ int sc_main(int argc, char *argv[])
     }
     Accumulator_First1.ctrl(ctrl);
     Accumulator_First1.clk(clk);
-    Accumulator_First1.rst(rst);
+    Accumulator_First1.rst(stage1_rst);
     Accumulator_First2.ctrl(ctrl);
     Accumulator_First2.clk(clk);
-    Accumulator_First2.rst(rst);
+    Accumulator_First2.rst(stage1_rst);
     Accumulator_First3.ctrl(ctrl);
     Accumulator_First3.clk(clk);
-    Accumulator_First3.rst(rst);
+    Accumulator_First3.rst(stage1_rst);
     Accumulator_First4.ctrl(ctrl);
     Accumulator_First4.clk(clk);
-    Accumulator_First4.rst(rst);
+    Accumulator_First4.rst(stage1_rst);
     Accumulator_First5.ctrl(ctrl);
     Accumulator_First5.clk(clk);
-    Accumulator_First5.rst(rst);
+    Accumulator_First5.rst(stage1_rst);
     Accumulator_First6.ctrl(ctrl);
     Accumulator_First6.clk(clk);
-    Accumulator_First6.rst(rst);
+    Accumulator_First6.rst(stage1_rst);
     Accumulator_First7.ctrl(ctrl);
     Accumulator_First7.clk(clk);
-    Accumulator_First7.rst(rst);
+    Accumulator_First7.rst(stage1_rst);
     Accumulator_First8.ctrl(ctrl);
     Accumulator_First8.clk(clk);
-    Accumulator_First8.rst(rst);
+    Accumulator_First8.rst(stage1_rst);
 
     Accumulator_Third.clk(clk);
-    Accumulator_Third.rst(rst);
+    Accumulator_Third.rst(stage3_rst);
+
     for(int i = 0; i < BUFFER_NUM; i++)
         Accumulator_Third.input_T[i](t_output[i]);
     for(int i = 0; i < 2; i++)
         Accumulator_Third.input_S[i](s_input[i]);
+
     Accumulator_Third.ctrl_1(ctrl_1);
     Accumulator_Third.ctrl_2(ctrl_2);
 
@@ -339,6 +367,15 @@ int sc_main(int argc, char *argv[])
     sc_trace(tf, Accumulator_First1.shift_regs[6][2], "shift_regs(6)(2)");
     sc_trace(tf, Accumulator_First1.shift_regs[7][2], "shift_regs(7)(2)");
     sc_trace(tf, Accumulator_First1.shift_regs[8][2], "shift_regs(8)(2)");
+    sc_trace(tf, Accumulator_First1.shift_regs[0][3], "shift_regs(0)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[1][3], "shift_regs(1)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[2][3], "shift_regs(2)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[3][3], "shift_regs(3)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[4][3], "shift_regs(4)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[5][3], "shift_regs(5)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[6][3], "shift_regs(6)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[7][3], "shift_regs(7)(3)");
+    sc_trace(tf, Accumulator_First1.shift_regs[8][3], "shift_regs(8)(3)");
 
     //trace tree adder out
     sc_trace(tf, treeAdder.output[0], "tree_adder(0)");
@@ -351,10 +388,34 @@ int sc_main(int argc, char *argv[])
     sc_trace(tf, treeAdder.output[7], "tree_adder(7)");
     sc_trace(tf, treeAdder.output[8], "tree_adder(8)");
 
-    rst.write(false);
+    //trace the 3rd stage Acc. output
+    sc_trace(tf, Accumulator_Third.output_P[0], "Accumulator_Third.output(0)");
+    sc_trace(tf, Accumulator_Third.output_P[1], "Accumulator_Third.output(1)");
+    sc_trace(tf, Accumulator_Third.output_P[2], "Accumulator_Third.output(2)");
+    sc_trace(tf, Accumulator_Third.output_P[3], "Accumulator_Third.output(3)");
+    sc_trace(tf, Accumulator_Third.output_P[4], "Accumulator_Third.output(4)");
+    sc_trace(tf, Accumulator_Third.output_P[5], "Accumulator_Third.output(5)");
+    sc_trace(tf, Accumulator_Third.output_P[6], "Accumulator_Third.output(6)");
+
+    //trace the 3rd stage Acc. shift registers
+    sc_trace(tf, Accumulator_Third.shift_regs[2][0], "Accumulator_Third.shift_regs(2)(0)");
+    sc_trace(tf, Accumulator_Third.shift_regs[2][1], "Accumulator_Third.shift_regs(2)(1)");
+    sc_trace(tf, Accumulator_Third.shift_regs[2][2], "Accumulator_Third.shift_regs(2)(2)");
+    sc_trace(tf, Accumulator_Third.shift_regs[2][3], "Accumulator_Third.shift_regs(2)(3)");
+    sc_trace(tf, Accumulator_Third.shift_regs[2][4], "Accumulator_Third.shift_regs(2)(4)");
+    sc_trace(tf, Accumulator_Third.ctrl2_reg, "Accumulator.ctrl2_reg");
+    sc_trace(tf, Accumulator_Third.input_T[2], "Accumulator_Third.input_T(2)");
+
+    stage1_rst.write(false);
+    stage3_rst.write(false);
     ctrl.write(0);
+    ctrl_1.write(1);
+    ctrl_2.write(4);
+    s_input[0].write(0);
+    s_input[1].write(0);
     sc_start(10, SC_NS);
-    rst.write(true);
+    stage1_rst.write(true);
+    stage3_rst.write(true);
 
     //cycle 1:
     //given input and weight
@@ -380,7 +441,7 @@ int sc_main(int argc, char *argv[])
 
     // for(int i=0; i<9; i++) {
     //     buffer[i].write(1);
-    //     ctrl.write(0);
+    //     ctrl_stage1.write(0);
     // }
 
     //cycle 2:
@@ -406,7 +467,6 @@ int sc_main(int argc, char *argv[])
     sc_start(10, SC_NS);
 
     //cycle 3:
-    ctrl.write(1);
     //given input and weight
     for (int k = 0; k < 8; k++)
     {
@@ -532,6 +592,7 @@ int sc_main(int argc, char *argv[])
     }
 
     ctrl.write(2);
+    ctrl_2.write(0);
     sc_start(10, SC_NS);
 
     //cycle 9:
@@ -553,6 +614,7 @@ int sc_main(int argc, char *argv[])
         }
     }
     ctrl.write(1);
+    ctrl_2.write(4);
     sc_start(10, SC_NS);
 
     //cycle 10:
@@ -592,6 +654,7 @@ int sc_main(int argc, char *argv[])
         }
     }
     ctrl.write(2);
+    ctrl_2.write(1);
     sc_start(10, SC_NS);
 
     //cycle 12:
@@ -611,9 +674,303 @@ int sc_main(int argc, char *argv[])
         }
     }
     ctrl.write(3);
+    ctrl_2.write(4);
     sc_start(10, SC_NS);
 
-    sc_start(200, SC_NS);
+    //cycle13:
+    //ctrl.write(0);
+    ctrl_2.write(2);
+    sc_start(10, SC_NS);
+
+    //cycle14:
+    ctrl_2.write(3);
+    sc_start(10, SC_NS);
+
+    //cycle15:
+    ctrl_2.write(4);
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+
+            input[k-8][i].write(0);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+
+            weight[k-8][i].write(0);
+        }
+    }
+    stage1_rst.write(false);
+    sc_start(20, SC_NS);
+
+    //cycle16:
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+
+            input[k-8][i].write(input_matrix[k][i][0]);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+
+            weight[k-8][i].write(filter[k][i][0]);
+        }
+    }
+    stage1_rst.write(true);
+    ctrl.write(0);
+
+    sc_start(10, SC_NS);
+    
+    //cycle17:
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+
+            input[k-8][i].write(input_matrix[k][i][1]);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+
+            weight[k-8][i].write(filter[k][i][0]);
+        }
+    }
+    ctrl.write(1);
+    sc_start(10, SC_NS);
+
+    //cycle 18:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            input[k-8][i].write(input_matrix[k][i][1]);
+        }
+    }
+
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            weight[k-8][i].write(filter[k][i][1]);
+        }
+    }
+
+    ctrl.write(0);
+    sc_start(10, SC_NS);
+
+    //cycle 19:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            input[k-8][i].write(input_matrix[k][i][2]);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+
+            weight[k-8][i].write(filter[k][i][0]);
+        }
+    }
+
+    ctrl.write(2);
+    sc_start(10, SC_NS);
+
+    //cycle 20:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+
+            input[k-8][i].write(input_matrix[k][i][2]);
+        }
+    }
+
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            weight[k-8][i].write(filter[k][i][1]);
+        }
+    }
+
+    ctrl.write(1);
+    sc_start(10, SC_NS);
+
+    //cycle 21:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            input[k-8][i].write(input_matrix[k][i][2]);
+        }
+    }
+
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            weight[k-8][i].write(filter[k][i][2]);
+        }
+    }
+
+    ctrl.write(0);
+    sc_start(10, SC_NS);
+
+    //cycle 22:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            input[k-8][i].write(input_matrix[k][i][3]);
+        }
+    }
+
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            weight[k-8][i].write(filter[k][i][0]);
+        }
+    }
+
+    ctrl.write(3);
+    sc_start(10, SC_NS);
+
+    //cycle 23:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+
+            input[k-8][i].write(input_matrix[k][i][3]);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+
+            weight[k-8][i].write(filter[k][i][1]);
+        }
+    }
+
+    ctrl.write(2);
+    ctrl_2.write(0);
+    sc_start(10, SC_NS);
+
+    //cycle 24:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+
+            input[k-8][i].write(input_matrix[k][i][3]);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+
+            weight[k-8][i].write(filter[k][i][2]);
+        }
+    }
+    ctrl.write(1);
+    ctrl_2.write(4);
+    sc_start(10, SC_NS);
+
+    //cycle 25:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            input[k-8][i].write(input_matrix[k][i][4]);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            weight[k-8][i].write(filter[k][i][1]);
+        }
+    }
+    ctrl.write(3);
+    sc_start(10, SC_NS);
+
+    //cycle 26:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            input[k-8][i].write(input_matrix[k][i][4]);
+        }
+    }
+
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            weight[k-8][i].write(filter[k][i][2]);
+        }
+    }
+    ctrl.write(2);
+    ctrl_2.write(1);
+    sc_start(10, SC_NS);
+
+    //cycle 27:
+    //given input and weight
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            input[k-8][i].write(input_matrix[k][i][5]);
+        }
+    }
+    for (int k = 8; k < 16; k++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            weight[k-8][i].write(filter[k][i][2]);
+        }
+    }
+    ctrl.write(3);
+    ctrl_2.write(4);
+    sc_start(10, SC_NS);
+
+    //cycle 28:
+    ctrl_2.write(2);
+    sc_start(10, SC_NS);
+
+    //cycle 29:
+    ctrl_2.write(3);
+    sc_start(10, SC_NS);
+
+    //cycle30, 31
+    ctrl_2.write(4);
+    sc_start(20, SC_NS);
 
     sc_close_vcd_trace_file(tf);
     return (0);

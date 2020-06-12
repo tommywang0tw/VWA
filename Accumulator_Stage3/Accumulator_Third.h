@@ -18,6 +18,7 @@ SC_MODULE(ACCUMULATOR_THIRD) {
 /* Registers  */
     //sc_signal<sc_uint<32> > input_regs[BUFFER_NUM];  //Input register
     sc_signal<sc_uint<32> > ctrl2_reg;
+    sc_signal<sc_uint<32> > ctrl1_reg;
 /* Shift Registers  */
     sc_signal<sc_uint<32> > shift_regs[BUFFER_NUM][SH_REG_NUM];
 
