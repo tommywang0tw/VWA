@@ -107,6 +107,7 @@ SC_MODULE(CONTROLLER) {
     sc_uint<32> conv_input_time;
     sc_uint<32> conv_weight_time;
     sc_uint<32> input_data_ready;
+    sc_uint<32> filter_col;
 
     sc_uint<32> tmp_move_weight_count;  //how many times u need to move weights data
     sc_uint<32> move_weight_count;

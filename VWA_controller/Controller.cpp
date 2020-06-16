@@ -4,7 +4,7 @@
 #define WEIGHT_DRAM_TO_SRAM 2
 #define MOVING_WEIGHT 3
 #define DO_CONV 4
-
+#define FINISH_CONV 5
 void CONTROLLER::do_Controller()
 {
 
@@ -25,6 +25,7 @@ void CONTROLLER::do_Controller()
     stage3_rst_count = 1;
     read_addr = 3296; //add 8 each time
     write_addr = 0;   //add 8 each time
+    filter_col = 0;
     read_boundary.write(0);
     write_boundary.write(0);
     bottom_bad_tile = false;
@@ -145,6 +146,7 @@ void CONTROLLER::do_Controller()
                 data_length.write(weight_count);
                 tmp_move_weight_count--;
                 weight_count = 0;
+                filter_col =  input_ch.read() * f_num.read() / 8;
             }
             else if (tmp_move_weight_count > 1 && (total_weight > (WEIGHT_SRAM_SIZE / 4)))
             {
@@ -186,7 +188,7 @@ void CONTROLLER::do_Controller()
 
         case DO_CONV:
         {   
-            cout << "do_Conv" << endl;
+           
             stage3_ctrl1.write(0);
             //handle the right most abnormal tile
             int stop_cycle_count;
@@ -261,7 +263,7 @@ void CONTROLLER::do_Controller()
                 stage3_ctrl1.write(1);
                 endOfTile = false;
             }
-
+            //cout << "do_Conv : " << cycle_count << endl;
             int num_op_per_tile = input_ch.read()/8;
             int tile_start_col = ( (current_tile_col-1)*num_op_per_tile + (stage3_rst_count-1) + (current_tile_row-1)*num_of_tile_col)*6;
             switch (cycle_count){
@@ -285,8 +287,8 @@ void CONTROLLER::do_Controller()
             case 2: //cycle 2
                 input_read_col = 1;
                 inputS_col.write(input_read_col + tile_start_col);
-                cout << "tile start col: " << tile_start_col << endl;
-                cout << "tmp_weight_addr" << tmp_dram_weight_addr << endl;
+                //cout << "tile start col: " << tile_start_col << endl;
+                //cout << "tmp_weight_addr" << tmp_dram_weight_addr << endl;
                 for(int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + i * WEIGHT_SRAM_BANK_SIZE);
                 break;
@@ -503,34 +505,59 @@ void CONTROLLER::do_Controller()
                         stage3_rst_count++;
                     }
                 }
+                cout << "======finsish 1 convolution=====" << endl;
                 break;
+                
 
             default:
                 break;
             }
 
             //******************************edit*********************************************
+            cout << "tile count : " << tile_count << endl;
+            cout << "need " << ((tile_count * input_ch.read()) / 8 * (f_num.read())) << " times " << endl;
+            cout << "conv_input_time : " << conv_input_time << endl;
             if (conv_input_time == ((tile_count * input_ch.read()) / 8 * (f_num.read())) )//all input in inputSRAM are already used, load next input
             {
-                state = INPUT_DRAM_TO_SRAM;
-                conv_input_time = 0;
-                tile_count = 0;
-                input_move_count = 0;
-                tmp_input_addr = INPUT_SRAM_BASE;
+                
+                if((num_of_tile_col * num_of_tile_row * input_ch.read()) <= INPUT_SRAM_SIZE)
+                {
+                    cout << "finisihhhhhhhhhhhhhhhhhh" << endl;
+                    state = FINISH_CONV;
+                }
+                else
+                {
+                    cout << "conv_input_time arrived " << endl;
+                    state = INPUT_DRAM_TO_SRAM;
+                    conv_input_time = 0;
+                    tile_count = 0;
+                    input_move_count = 0;
+                    tmp_input_addr = INPUT_SRAM_BASE;
+                }
             }
-            else if (conv_weight_time == (total_weight / move_weight_count / (f_size.read() * f_size.read() * 8))) //all weight are already used, load next weight
+            else if ((conv_weight_time == (total_weight / move_weight_count / (f_size.read() * f_size.read() * 8))) && (total_weight > (INPUT_SRAM_SIZE/4))) //all weight are already used, load next weight
             {
+                cout << "conv_weight_time arrived " << endl;
                 state = WEIGHT_DRAM_TO_SRAM;
                 conv_weight_time = 0;
             }
 
-                //calculate next weight address
-                tmp_weight_addr += 36;
-            if (tmp_weight_addr == (WEIGHT_SRAM_BASE + WEIGHT_SRAM_BANK_SIZE * 4))
+            //calculate next weight address
+            tmp_weight_addr += 36;
+            if ((tmp_weight_addr == (WEIGHT_SRAM_BASE + WEIGHT_SRAM_BANK_SIZE * 4)) || (tmp_weight_addr == (WEIGHT_SRAM_BASE + filter_col * 36)))
+            {
                 tmp_weight_addr = WEIGHT_SRAM_BASE;
+            }
             
         }   break;
         
+        case FINISH_CONV :
+
+            cout << "CONGRATULATIONSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+
+        break;
+
+
         default:
             break;
         }

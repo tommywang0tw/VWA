@@ -33,12 +33,15 @@ SC_MODULE(InputSRAM){
     sc_out<bool> done;
 
     // Queue
-    uint32_t data_f;
-    uint32_t data_b;
+    //uint32_t data_f;
+    sc_uint<32> data_f;
+    //uint32_t data_b;
+    sc_uint<32> data_b;
     sc_signal<bool> sram_mode;
     
     // sram
-    int32_t data_sram[INPUT_SRAM_BANK][7][120];
+    //int32_t data_sram[INPUT_SRAM_BANK][7][120];
+    sc_int<32> data_sram[INPUT_SRAM_BANK][7][120];
     
     void sram();
    

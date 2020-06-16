@@ -33,12 +33,15 @@ SC_MODULE(WeightSRAM){
     sc_out<bool> done;
 
     // Queue
-    uint32_t data_f;
-    uint32_t data_b;
+    //uint32_t data_f;
+    sc_uint<32> data_f;
+    //uint32_t data_b;
+    sc_uint<32> data_b;
     sc_signal<bool> sram_mode;
     
     // sram
-    int32_t  weight_sram[WEIGHT_SRAM_BANK][3][192];
+    //int32_t  weight_sram[WEIGHT_SRAM_BANK][3][192];
+    sc_int<32> weight_sram[WEIGHT_SRAM_BANK][3][192];
     
     void sram();
     

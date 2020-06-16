@@ -10,13 +10,12 @@ void InputSRAM::sram(){
                 {   
                     for(int k=0; k < 120;k++)
                     {
-                        cout << "j = " << j << "to pe: " <<  data_to_pe[i][j] << "k=" << k <<endl;
+                        //cout << "i = " << i << "j = " << j  << " k = " << k  << " to pe: " <<  data_to_pe[i][j] <<endl;
                         data_to_pe[i][j].write(0);
-                        data_sram[i][j][k] = 0;
-                       //data_to_pe[i][j].write(0);
                     }
                 }
             }
+            cout << "rstrst" << endl;;
             data_f = 0;
 
             data_b = 0;
@@ -52,8 +51,8 @@ void InputSRAM::sram(){
                     for(int j=0; j < 7;j++)
                     {
                         data_to_pe[i][j].write(data_sram[i][j][col_select.read()]);
-                        cout << "col_select: " << col_select.read()<< endl;
-                        cout << "pe out : " << data_sram[i][j][col_select.read()] << endl;
+                        //cout << "col_select: " << col_select.read()<< endl;
+                        //cout << "pe out : " << data_sram[i][j][col_select.read()] << endl;
                     }
                 }
             // }
