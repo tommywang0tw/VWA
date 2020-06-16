@@ -22,6 +22,7 @@ void CONTROLLER::do_Controller()
     tile_count = 0;
     current_tile_col = 1;
     current_tile_row = 1;
+    stage3_rst_count = 1;
     read_addr = 3296; //add 8 each time
     write_addr = 0;   //add 8 each time
     read_boundary.write(0);
@@ -88,6 +89,22 @@ void CONTROLLER::do_Controller()
         case MOVING_INPUT:
             //cout << "do_MOVING_INPUT" << endl;
             read_in.write(false);
+
+            if (((input_size.read() - 6) % 4) == 0)
+            {
+                num_of_tile_col = ((input_size.read() - 6) / 4) + 1;
+                unroll_image_col = num_of_tile_col*6;
+            }
+            else
+            {
+                num_of_tile_col = ((input_size.read() - 6) / 4) + 2; //including of bad tile
+                int bad_tile_col = input_size.read() - ((num_of_tile_col - 2) * 4 + 6) + 2;
+                unroll_image_col = num_of_tile_col*6 + bad_tile_col;
+            }
+
+            unroll_image_size = unroll_image_col * input_size.read() * input_ch.read();
+            //cout << "unroll image size: " << unroll_image_size << endl; 
+
             if (dma_done)
             {
                 cout << "width : " << tmp_tile_width << endl;
@@ -105,7 +122,7 @@ void CONTROLLER::do_Controller()
 
                 tmp_input_addr += width * height * input_ch.read() * 4;
                 cout << "input move count : " << input_move_count << endl;
-                    if((input_size.read() * input_size.read() * input_ch.read()))
+                    if(input_move_count == unroll_image_size)
                         state = WEIGHT_DRAM_TO_SRAM;
                     else if(tmp_dram_input_addr > (DRAM4_BASE + (input_size.read() * input_size.read() * 4))) //all input is finished, go to next state
                         state = WEIGHT_DRAM_TO_SRAM;
@@ -118,9 +135,12 @@ void CONTROLLER::do_Controller()
             break;
 
         case WEIGHT_DRAM_TO_SRAM:
+
+            read_in.write(true);
             cout << "do WEIGHT_DRAM_TO_SRAM" << endl;
             if (total_weight < (WEIGHT_SRAM_SIZE / 4)) //weights only need to move one time
             {
+                cout << weight_count << " " << tmp_dram_weight_addr << " " << WEIGHT_SRAM_BASE << endl;
                 source_address.write(tmp_dram_weight_addr);
                 data_length.write(weight_count);
                 tmp_move_weight_count--;
@@ -145,18 +165,20 @@ void CONTROLLER::do_Controller()
 
             target_address.write(WEIGHT_SRAM_BASE);
             if (f_size.read() > 0)
-                sram_mode.write(false); //3 x 3 filter size
+                sram_mode.write(true); //3 x 3 filter size
             else
                 sram_mode.write(true); //5 x 5 filter size
 
-            read_in.write(true);
             state = MOVING_WEIGHT;
 
             break;
 
         case MOVING_WEIGHT:
 
+            //cout << "MOVING_WEIGHT" << endl;
             read_in.write(false);
+            //cout << dma_done << endl;
+            //cout << "time : " << sc_time_stamp() << endl;
             if (dma_done)
                 state = DO_CONV;
 
@@ -241,7 +263,7 @@ void CONTROLLER::do_Controller()
             }
 
             int num_op_per_tile = input_ch.read()/8;
-            int tile_start_col = ( (current_tile_col-1)*num_op_per_tile + (stage3_rst_count-1) + (current_tile_row-1)*num_of_tile_col - 1)*6;
+            int tile_start_col = ( (current_tile_col-1)*num_op_per_tile + (stage3_rst_count-1) + (current_tile_row-1)*num_of_tile_col)*6;
             switch (cycle_count){
             case 1: //cycle 1
                 input_read_col = 0;
@@ -263,6 +285,8 @@ void CONTROLLER::do_Controller()
             case 2: //cycle 2
                 input_read_col = 1;
                 inputS_col.write(input_read_col + tile_start_col);
+                cout << "tile start col: " << tile_start_col << endl;
+                cout << "tmp_weight_addr" << tmp_dram_weight_addr << endl;
                 for(int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + i * WEIGHT_SRAM_BANK_SIZE);
                 break;

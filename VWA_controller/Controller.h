@@ -73,7 +73,6 @@ SC_MODULE(CONTROLLER) {
     sc_uint<32> cycle_count; //current cycle 
     sc_uint<32> current_tile_col; //current tile counter in col
     sc_uint<32> num_of_tile_col;  
-
     sc_uint<32> current_tile_row; //current tile counter in row
     sc_uint<32> num_of_tile_row;  
 
@@ -114,6 +113,7 @@ SC_MODULE(CONTROLLER) {
     sc_uint<32> weight_count;
     sc_uint<32> state;
 
+    int unroll_image_col, unroll_image_size;
 
     void do_Controller();
     

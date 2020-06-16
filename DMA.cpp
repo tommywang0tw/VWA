@@ -80,7 +80,6 @@ void DMA::dma_function(){
                     input_SRAM_write = 0;
                     weight_SRAM_write = 0;
                     state = WAIT_DRAM_READ;
-                    to_SRAM_mode = 1;
                     busy = 1;
                     if (target_address.read() < WEIGHT_SRAM_BASE ){
                         if (length.read() == 0){

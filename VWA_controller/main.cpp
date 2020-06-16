@@ -181,7 +181,6 @@ int sc_main(int argc, char *argv[])
     }
 
 
-
 //Weightsram port connect
     weightsram.clk(clk);
     weightsram.rst(rst);
@@ -466,7 +465,12 @@ int sc_main(int argc, char *argv[])
     // sc_trace(tf, weightsram.out_data[7][2], "weightsramout_data[7][2]");
 
     //trace input signal
-    sc_trace(tf, DMA.done, "dma_done");
+    sc_trace(tf, DMA.done, "dma.dma_done");
+    sc_trace(tf, DMA.source , "dma.dma_source");
+    sc_trace(tf, DMA.read_in , "dma.read_in");
+    sc_trace(tf, DMA.length , "dma.length");
+
+
     sc_trace(tf, pe1.input[0], "pe1_input[0]");
     sc_trace(tf, pe1.input[1], "pe1_input[1]");
     sc_trace(tf, pe1.input[2], "pe1_input[2]");
@@ -719,8 +723,20 @@ int sc_main(int argc, char *argv[])
     start.write(1);
     input_ch.write(16);
 
+    sc_start(10000, SC_NS);
+
+    for (int k =0 ; k < 8; k++){
+        cout << " bank" << k <<endl;
+        for (int i =0 ; i < 7; i++){
+            for (int j = 0 ; j < 6 ; j ++)
+                cout << inputsram.data_sram[k][i][j] << " ";
+        cout << endl;
+        }
+    }
+    cout<<"*****************" << endl;
+
     sc_start(100000, SC_NS);
-    cout << "done" << endl;
+
     sc_close_vcd_trace_file(tf);
 
     return 0;
