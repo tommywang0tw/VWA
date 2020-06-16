@@ -39,6 +39,9 @@ int sc_main(int argc, char* argv[])
   sc_signal<sc_uint<ADDR_LENGTH> > s_addr;
   sc_signal<sc_uint<ADDR_LENGTH> > t_addr;
   sc_signal<sc_uint<32> > length;
+  sc_signal<sc_uint<32> > input_l;
+  sc_signal<sc_uint<32> > width;
+  sc_signal<sc_uint<32> > high;
   sc_signal<sc_uint<DATA_LENGTH> > data_out;
   sc_signal<bool> sram_mode;
   sc_signal<bool> done;
@@ -59,6 +62,7 @@ int sc_main(int argc, char* argv[])
   sc_signal<sc_uint<32> > databus2[9];
   sc_signal<bool> vaild2;
   sc_signal<sc_uint<32> > temp2[8][7];
+  sc_signal<sc_uint<32> > w_bank_addr[8];
 
   
 
@@ -76,6 +80,9 @@ int sc_main(int argc, char* argv[])
   dma->source_address(s_addr);
   dma->target_address(t_addr);
   dma->data_length(length);
+  dma->input_width(input_l);
+  dma->tile_width(width);
+  dma->tile_high(high);
   dma->sram_mode(sram_mode);
   dma->socket.bind(dram->socket);
 
@@ -117,6 +124,9 @@ int sc_main(int argc, char* argv[])
   b->clk(clock);
   b->rst(rst);
   b->pe_read(sram_read);
+  for (int i = 0; i < 8 ; i++){
+    b->weight_bank_addr[i](w_bank_addr[i]);
+  }
   b->dma_write(sram_write2);
   b->mode(mode);
   for (int i = 0; i < 9 ; i++){
@@ -141,13 +151,28 @@ int sc_main(int argc, char* argv[])
   sc_trace(tf,dma->target,"dma->target");
   sc_trace(tf,a->done,"inputSRAM->done");
   sc_trace(tf,a->data_f,"inputSRAM->bank_f");
-  sc_trace(tf,b->data_f,"weight->bank_f");
+  sc_trace(tf,dma->source,"source");
+  sc_trace(tf,dma->source_base,"source_base");
+  sc_trace(tf,a->dma_write,"inputSRAM->dram_write");
+  sc_trace(tf,a->mode,"mode");
+  sc_trace(tf,dma->isram_done,"done");
+  sc_trace(tf,dma->tile_count,"tile_count");
+  sc_trace(tf,dma->input_size,"input_size");
+  sc_trace(tf,dma->tile_width,"tile_width");
+  sc_trace(tf,dma->tile_high,"tile_high");
+  sc_trace(tf,dma->length,"length");
   for (int i = 0; i < 7 ; i++){
     sc_trace(tf,a->data[i],"inputSRAM->data["+int2str(i)+"]");
   }
-  for (int i = 0; i < 9 ; i++){
-    sc_trace(tf,b->data[i],"weightSRAM->data["+int2str(i)+"]");
+  for (int i = 0; i < 7 ; i++){
+    sc_trace(tf,dma->to_SRAM_data[i],"dma->to_sram_data["+int2str(i)+"]");
   }
+  for (int i = 0; i < 7 ; i++){
+    sc_trace(tf,dma->weight_data[i],"dma->weight_data["+int2str(i)+"]");
+  }
+  // for (int i = 0; i < 9 ; i++){
+  //   sc_trace(tf,b->data[i],"weightSRAM->data["+int2str(i)+"]");
+  // }
   // sc_trace(tf,dram->peq_cb().ptr,"dram.peq_cb.ptr");
   // sc_trace(tf,irpt_clear,"irpt_clear");
   // sc_trace(tf,re_data,"re_data");
@@ -157,298 +182,92 @@ int sc_main(int argc, char* argv[])
 
 
 //write data to memory
-  sc_start(10, SC_NS);
-  cout << sc_time_stamp() << "  -----------------------------" << endl;
-  for (int i =0 ; i < 80 ; i++){
+
+  // inpu SRAM Test
+  // for (int i =0 ; i <10000000 ; i++){
+  //   dram->mem[i] = i+1;
+  // }
+  // sc_start(10, SC_NS);
+  // cout << sc_time_stamp() << "  -----------------------------" << endl;
+  
+  // s_addr = 0;
+  // t_addr = 0x50000000;
+  // write = 1;
+  // input_l= 416;
+  // width = 6;
+  // high = 7;
+  // length = 1680;
+  // sram_mode = 1;
+  // sc_start(5, SC_NS);
+  // write = 0;
+  // sc_start(2000, SC_NS);
+
+  // cout << sc_time_stamp() << "  -----------------------------" << endl;
+  // cout << "DONE:" <<  done << endl;
+
+  
+  // for (int k =0 ; k < 8; k++){
+  //   cout << " bank" << k <<endl;
+  //   for (int i =0 ; i < 7; i++){
+  //     for (int j = 0 ; j < 6 ; j ++)
+  //       cout << a->data_sram[k][i][j] << " ";
+  //     cout << endl;
+  //   }
+  //   cout<<"*****************" << endl;
+  // }
+ 
+  // for (int k =0 ; k < 8; k++){
+  //   cout << " bank" << k <<endl;
+  //   for (int i =0 ; i < 7; i++){
+  //     for (int j = 6 ; j < 12 ; j ++)
+  //       cout << a->data_sram[k][i][j] << " ";
+  //     cout << endl;
+  //   }
+  //   cout<<"*****************" << endl;
+  // }
+
+  // weight SRAM Test
+  for (int i =0 ; i <1000 ; i++){
     dram->mem[i] = i+1;
   }
+  sc_start(10, SC_NS);
+  cout << sc_time_stamp() << "  -----------------------------" << endl;
+  
   s_addr = 0;
-  t_addr = 0x50000000;
+  t_addr = 0x51000000;
   write = 1;
-  length = 28;
-  sram_mode = 0;
+  input_l= 0;
+  width = 6;
+  high = 7;
+  length = 432;
+  sram_mode = 1;
   sc_start(5, SC_NS);
   write = 0;
-  sc_start(70, SC_NS);
-  // cout << sc_time_stamp() << "  -----------------------------" << endl;
-  // cout << " 1=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[0][i][j]<< " ";
-  // }
-  // cout << endl << " 2=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[1][i][j]<< " ";
-  // }
-  // cout << endl<< " 3=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[2][i][j]<< " ";
-  // }
-  // cout << endl;
+  sc_start(1000, SC_NS);
 
   cout << sc_time_stamp() << "  -----------------------------" << endl;
-  s_addr = 28;
-  t_addr = 0x50000024;
-  write = 1;
-  length = 28;
-  sc_start(5, SC_NS);
-  write = 0;
+  cout << "DONE:" <<  done << endl;
 
-  sc_start(70, SC_NS);
-  // cout << sc_time_stamp() << "  -----------------------------" << endl;
   
-  // cout << " 1=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[0][i][j]<< " ";
-  // }
-  // cout << endl << " 2=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[1][i][j]<< " ";
-  // }
-  // cout << endl<< " 3=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[2][i][j]<< " ";
-  // }
-  // cout << endl;
-
-  sc_start(10, SC_NS);
-  cout << sc_time_stamp() << "  -----------------------------" << endl;
-  s_addr =72;
-  t_addr = 0x51000038;
-  write = 1;
-  length = 36;
-  sc_start(5, SC_NS);
-  write = 0;
-
-  sc_start(70, SC_NS);
-  // cout << sc_time_stamp() << "  -----------------------------" << endl;
-  // cout << " 1=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[0][i][j]<< " ";
-  // }
-  // cout << endl << " 2=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[1][i][j]<< " ";
-  // }
-  // cout << endl<< " 3=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[2][i][j]<< " ";
-  // }
-  // cout << endl;
-  
-  // sc_start(10, SC_NS);
-  // cout << sc_time_stamp() << "  -----------------------------" << endl;
-  // s_addr =108;
-  // t_addr = 0x51000038;
-  // write = 1;
-  // length = 36;
-  // sc_start(5, SC_NS);
-  // write = 0;
-
-  // sc_start(70, SC_NS);
-
-  //  sc_start(10, SC_NS);
-  // cout << sc_time_stamp() << "  -----------------------------" << endl;
-  // s_addr =144;
-  // t_addr = 0x51000038;
-  // write = 1;
-  // length = 36;
-  // sc_start(5, SC_NS);
-  // write = 0;
-
-  // sc_start(70, SC_NS);
-
-  // sc_start(10, SC_NS);
-  // cout << sc_time_stamp() << "  -----------------------------" << endl;
-  // s_addr =180;
-  // t_addr = 0x51000038;
-  // write = 1;
-  // length = 36;
-  // sc_start(5, SC_NS);
-  // write = 0;
-
-  // sc_start(70, SC_NS);
-  
-  // sc_start(10, SC_NS);
-  // cout << sc_time_stamp() << "  -----------------------------" << endl;
-  // s_addr =216;
-  // t_addr = 0x51000038;
-  // write = 1;
-  // length = 36;
-  // sc_start(5, SC_NS);
-  // write = 0;
-
-  // sc_start(70, SC_NS);
-
-  // cout << " 1=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[0][i][j]<< " ";
-  // }
-  // cout << endl << " 2=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[1][i][j]<< " ";
-  // }
-  // cout << endl<< " 3=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[2][i][j]<< " ";
-  // }
-  // cout << endl;
-
-  // cout << " 4=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[3][i][j]<< " ";
-  // }
-  // cout << endl << " 5=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[4][i][j]<< " ";
-  // }
-  // cout << endl<< " 6=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[5][i][j]<< " ";
-  // }
-  // cout << endl;
-
-  // cout << " 1.1=>";
-  // for (int i =0 ; i < 3; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << b->data_sram[0][i][j+3]<< " ";
-  // }
-  // cout << endl;
-
-  // sram_read = 1 ;
-  // sc_start(5, SC_NS);
-  // for (int i =0 ; i < 8; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << temp2[i][j]<< " ";
-
-  //   cout <<endl;
-  // }
-
-  // sc_start(5, SC_NS);
-  // for (int i =0 ; i < 8; i++){
-  //   for (int j = 0; j< 3; j++)
-  //   cout << temp2[i][j]<< " ";
-
-  //   cout <<endl;
-  // }
-
-  sc_start(10, SC_NS);
-  cout << sc_time_stamp() << "  -----------------------------" << endl;
-  s_addr = 84;
-  t_addr = 0x50000038;
-  write = 1;
-  length = 28;
-  sc_start(5, SC_NS);
-  write = 0;
-
-  sc_start(70, SC_NS);
-
-  sc_start(10, SC_NS);
-  cout << sc_time_stamp() << "  -----------------------------" << endl;
-  s_addr = 112;
-  t_addr = 0x50000038;
-  write = 1;
-  length = 28;
-  sc_start(5, SC_NS);
-  write = 0;
-
-  sc_start(70, SC_NS);
-
-  sc_start(10, SC_NS);
-  cout << sc_time_stamp() << "  -----------------------------" << endl;
-  s_addr = 140;
-  t_addr = 0x50000038;
-  write = 1;
-  length = 28;
-  sc_start(5, SC_NS);
-  write = 0;
-
-  sc_start(70, SC_NS);
-
-  sc_start(10, SC_NS);
-  cout << sc_time_stamp() << "  -----------------------------" << endl;
-  s_addr = 168;
-  t_addr = 0x50000038;
-  write = 1;
-  length = 28;
-  sc_start(5, SC_NS);
-  write = 0;
-
-  sc_start(70, SC_NS);
-  sc_start(10, SC_NS);
-  cout << sc_time_stamp() << "  -----------------------------" << endl;
-  s_addr = 196;
-  t_addr = 0x50000038;
-  write = 1;
-  length = 28;
-
-  sc_start(5, SC_NS);
-  write = 0;
-
-  sc_start(70, SC_NS);
-
-  cout << " 1=>";
-  for (int i =0 ; i < 7; i++){
-    cout << a->data_sram[0][i][0];
+  for (int k =0 ; k < 8; k++){
+    cout << " bank" << k <<endl;
+    for (int i =0 ; i < 3; i++){
+      for (int j = 0 ; j < 6 ; j ++)
+        cout << b->weight_sram[k][i][j] << " ";
+      cout << endl;
+    }
+    cout<<"*****************" << endl;
   }
-  cout << endl << " 2=>";
-  for (int i =0 ; i < 7; i++){
-    cout << a->data_sram[1][i][0];
-  }
-  cout << endl<< " 3=>";
-  for (int i =0 ; i < 7; i++){
-    cout << a->data_sram[2][i][0];
-  }
-  cout << endl;
-  cout << " 4=>";
-  for (int i =0 ; i < 7; i++){
-    cout << a->data_sram[3][i][0];
-  }
-  cout << endl << " 5=>";
-  for (int i =0 ; i < 7; i++){
-    cout << a->data_sram[4][i][0];
-  }
-  cout << endl<< " 6=>";
-  for (int i =0 ; i < 7; i++){
-    cout << a->data_sram[5][i][0];
-  }
-  cout << endl;
-  cout << endl<< " 1.1=>";
-  for (int i =0 ; i < 7; i++){
-    cout << a->data_sram[0][i][1];
-  }
-  cout << endl;
-  cout << "DATABUS" << "............"<<endl;
-  sram_read = 1;
-  sc_start(5, SC_NS);
-  for (int i =0 ; i < 8; i++){
-    for (int j = 0; j< 7; j++)
-    cout << temp[i][j]<< " ";
-
-    cout <<endl;
-  }
-
-  sc_start(5, SC_NS);
-  for (int i =0 ; i < 8; i++){
-    for (int j = 0; j< 7; j++)
-    cout << temp[i][j]<< " ";
-
-    cout <<endl;
-  }
+ 
+  // for (int k =0 ; k < 8; k++){
+  //   cout << " bank" << k <<endl;
+  //   for (int i =0 ; i < 7; i++){
+  //     for (int j = 6 ; j < 12 ; j ++)
+  //       cout << b->weight_sram[k][i][j] << " ";
+  //     cout << endl;
+  //   }
+  //   cout<<"*****************" << endl;
+  // }
 
   
   return 0;
