@@ -85,7 +85,7 @@ int sc_main(int argc, char *argv[]){
     sc_trace(tf, Accumulator_Third.shift_regs[7][2], "shift_regs(7)(2)");
     sc_trace(tf, Accumulator_Third.shift_regs[8][2], "shift_regs(8)(2)");
     
-    
+
 
     rst.write(false);
     sc_start(10,SC_NS);
