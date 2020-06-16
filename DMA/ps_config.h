@@ -53,6 +53,7 @@
 //****************
 #define DRAM4_ID (4)
 #define DRAM4_BASE (0X00000000)
+#define DRAM4_WEIGHT_BASE (0X04000000)
 #define DRAM4_SIZE (MEM_SIZE)
 
 #define DRIVER_READ (0)

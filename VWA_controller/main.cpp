@@ -25,7 +25,16 @@ int sc_main(int argc, char *argv[])
     sc_signal<bool> write_to_pe;
     sc_signal<bool> start;
 
-    sc_signal<sc_uint<32> > input_ch, f_size, input_col, weight_col;
+    sc_signal<sc_uint<32> > weight_bank1_addr; 
+    sc_signal<sc_uint<32> > weight_bank2_addr; 
+    sc_signal<sc_uint<32> > weight_bank3_addr; 
+    sc_signal<sc_uint<32> > weight_bank4_addr; 
+    sc_signal<sc_uint<32> > weight_bank5_addr; 
+    sc_signal<sc_uint<32> > weight_bank6_addr; 
+    sc_signal<sc_uint<32> > weight_bank7_addr; 
+    sc_signal<sc_uint<32> > weight_bank8_addr; 
+
+    sc_signal<sc_uint<32> > input_ch, f_size, input_col;
     sc_signal<sc_uint<32> > stage1_ctrl, stage3_ctrl1, stage3_ctrl2;
     sc_signal<bool> stage1_rst, stage3_rst;
 
@@ -71,12 +80,20 @@ int sc_main(int argc, char *argv[])
     controller.out_input_ch(input_ch);
     controller.out_f_size(f_size);
     controller.input_col(input_col);
-    controller.weight_col(weight_col);
     controller.stage1_ctrl(stage1_ctrl);
     controller.stage3_ctrl1(stage3_ctrl1);
     controller.stage3_ctrl2(stage3_ctrl2);
     controller.stage1_rst(stage1_rst);
     controller.stage3_rst(stage3_rst);
+
+    controller.weight_bank1_addr(weight_bank1_addr);
+    controller.weight_bank2_addr(weight_bank2_addr);
+    controller.weight_bank3_addr(weight_bank3_addr);
+    controller.weight_bank4_addr(weight_bank4_addr);
+    controller.weight_bank5_addr(weight_bank5_addr);
+    controller.weight_bank6_addr(weight_bank6_addr);
+    controller.weight_bank7_addr(weight_bank7_addr);
+    controller.weight_bank8_addr(weight_bank8_addr);
 
 //inputsram port connect
     inputsram.clk(clk);
@@ -97,7 +114,14 @@ int sc_main(int argc, char *argv[])
     weightsram.write_to_pe(write_to_pe);
     weightsram.input_ch(input_ch);
     weightsram.f_size(f_size);
-    weightsram.weight_col(weight_col);
+    weightsram.weight_bank1_addr(weight_bank1_addr);
+    weightsram.weight_bank2_addr(weight_bank2_addr);
+    weightsram.weight_bank3_addr(weight_bank3_addr);
+    weightsram.weight_bank4_addr(weight_bank4_addr);
+    weightsram.weight_bank5_addr(weight_bank5_addr);
+    weightsram.weight_bank6_addr(weight_bank6_addr);
+    weightsram.weight_bank7_addr(weight_bank7_addr);
+    weightsram.weight_bank8_addr(weight_bank8_addr);
 
     for(int i = 0; i < 8; i++){
         for(int j = 0 ; j < 3; j++){
@@ -221,6 +245,39 @@ int sc_main(int argc, char *argv[])
 
     sc_trace_file *tf = sc_create_vcd_trace_file("RESULT");
 
+//trace output signal
+    sc_trace(tf, pe1.buffer[0], "buffer[0]");
+    sc_trace(tf, pe1.buffer[1], "buffer[1]");
+    sc_trace(tf, pe1.buffer[2], "buffer[2]");
+    sc_trace(tf, pe1.buffer[3], "buffer[3]");
+    sc_trace(tf, pe1.buffer[4], "buffer[4]");
+    sc_trace(tf, pe1.buffer[5], "buffer[5]");
+    sc_trace(tf, pe1.buffer[6], "buffer[6]");
+    sc_trace(tf, pe1.buffer[7], "buffer[7]");
+    sc_trace(tf, pe1.buffer[8], "buffer[8]");
+
+    //trace output signal
+    sc_trace(tf, pe2.buffer[0], "buffer2[0]");
+    sc_trace(tf, pe2.buffer[1], "buffer2[1]");
+    sc_trace(tf, pe2.buffer[2], "buffer2[2]");
+    sc_trace(tf, pe2.buffer[3], "buffer2[3]");
+    sc_trace(tf, pe2.buffer[4], "buffer2[4]");
+    sc_trace(tf, pe2.buffer[5], "buffer2[5]");
+    sc_trace(tf, pe2.buffer[6], "buffer2[6]");
+    sc_trace(tf, pe2.buffer[7], "buffer2[7]");
+    sc_trace(tf, pe2.buffer[8], "buffer2[8]");
+
+    //trace output signal
+    sc_trace(tf, pe3.buffer[0], "buffer3[0]");
+    sc_trace(tf, pe3.buffer[1], "buffer3[1]");
+    sc_trace(tf, pe3.buffer[2], "buffer3[2]");
+    sc_trace(tf, pe3.buffer[3], "buffer3[3]");
+    sc_trace(tf, pe3.buffer[4], "buffer3[4]");
+    sc_trace(tf, pe3.buffer[5], "buffer3[5]");
+    sc_trace(tf, pe3.buffer[6], "buffer3[6]");
+    sc_trace(tf, pe3.buffer[7], "buffer3[7]");
+    sc_trace(tf, pe3.buffer[8], "buffer3[8]");
+
 //trace controller signal
     sc_trace(tf, controller.clk, "clk");
     sc_trace(tf, controller.rst, "rst");
@@ -228,7 +285,6 @@ int sc_main(int argc, char *argv[])
     sc_trace(tf, controller.input_ch, "input_ch");
     sc_trace(tf, controller.write_to_pe, "write_to_pe");
     sc_trace(tf, controller.input_col, "input_col");
-    sc_trace(tf, controller.weight_col, "weight_col");
 
 //trace inputsram signal
     sc_trace(tf, inputsram.out_data[0][0], "inputsramout_data[0][0]");
@@ -272,7 +328,7 @@ int sc_main(int argc, char *argv[])
     sc_trace(tf, weightsram.out_data[7][0], "weightsramout_data[7][0]");
     sc_trace(tf, weightsram.out_data[7][1], "weightsramout_data[7][1]");
     sc_trace(tf, weightsram.out_data[7][2], "weightsramout_data[7][2]");
-
+    sc_trace(tf, weightsram.weight_bank1_addr, "weightsram_address");
     //trace input signal
     sc_trace(tf, pe1.input[0], "input[0]");
     sc_trace(tf, pe1.input[1], "input[1]");
@@ -346,7 +402,6 @@ int sc_main(int argc, char *argv[])
     sc_trace(tf, Accumulator_Third.ctrl2_reg, "Accumulator.ctrl2_reg");
     sc_trace(tf, Accumulator_Third.input_T[2], "Accumulator_Third.input_T(2)");
 
-
     stage1_rst.write(false);
     stage3_rst.write(false);
     stage1_ctrl.write(0);
@@ -364,7 +419,7 @@ int sc_main(int argc, char *argv[])
     rst.write(true);
     start.write(1);
     input_ch.write(8);
-    sc_start(500, SC_NS);
+    sc_start(300, SC_NS);
 
     sc_close_vcd_trace_file(tf);
     return 0;
