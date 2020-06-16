@@ -4,7 +4,7 @@ BUILDFLAGS  = -g3
 CXX         = g++
 
 INCFLAGS    = -I. -I${SYSTEMC_DIR}/include
-LDFLAGS     = -L${SYSTEMC_DIR}/lib-linux64 -lsystemc -lm
+LDFLAGS     = -L${SYSTEMC_DIR}/lib-linux64 -lsystemc -lm -g
 SRC_CPPHEAD1= Controller InputSRAM WeightSRAM PE mm DRAM
 SRC_CPPHEAD2= Accumulator_First  TreeAdder Accumulator_Third BoundarySRAM DMA
 SRC_CPP     =

@@ -59,7 +59,7 @@
 
 void DMA::dma_function(){
     while(1){
-        if(rst){
+        if(!rst){
             state = 5;
         }   
         else {
@@ -76,8 +76,7 @@ void DMA::dma_function(){
                     }
                 break;
 
-                case READ_DRAM :
-
+                case READ_DRAM : 
                     input_SRAM_write = 0;
                     weight_SRAM_write = 0;
                     state = WAIT_DRAM_READ;
@@ -217,6 +216,7 @@ void DMA::dma_function(){
                     for (int i = 0 ; i < 9; i++){
                         data_buffer[i] = 0;
                     }
+                   
                 break;
 
                 case WAIT_DRAM_READ:
@@ -229,8 +229,9 @@ void DMA::dma_function(){
                 break;
             }
 
-        }
+        }   
         wait();
+        
     }
     
 }

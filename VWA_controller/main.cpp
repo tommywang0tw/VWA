@@ -180,6 +180,8 @@ int sc_main(int argc, char *argv[])
         }
     }
 
+
+
 //Weightsram port connect
     weightsram.clk(clk);
     weightsram.rst(rst);
@@ -395,6 +397,15 @@ int sc_main(int argc, char *argv[])
 
 
 //trace inputsram signal
+    sc_trace(tf, inputsram.dma_write, "inputsram.dma_write");
+    sc_trace(tf, inputsram.data[0], "inputsram.data[0]");
+    sc_trace(tf, inputsram.data[1], "inputsram.data[1]");
+    sc_trace(tf, inputsram.data[2], "inputsram.data[2]");
+    sc_trace(tf, inputsram.data[3], "inputsram.data[3]");
+    sc_trace(tf, inputsram.data[4], "inputsram.data[4]");
+    sc_trace(tf, inputsram.data[5], "inputsram.data[5]");
+    sc_trace(tf, inputsram.data[6], "inputsram.data[6]");
+
     sc_trace(tf, inputsram_out_data[0][0], "inputsramout_data[0][0]");
     sc_trace(tf, inputsram_out_data[0][1], "inputsramout_data[0][1]");
     sc_trace(tf, inputsram_out_data[0][2], "inputsramout_data[0][2]");
@@ -455,6 +466,7 @@ int sc_main(int argc, char *argv[])
     // sc_trace(tf, weightsram.out_data[7][2], "weightsramout_data[7][2]");
 
     //trace input signal
+    sc_trace(tf, DMA.done, "dma_done");
     sc_trace(tf, pe1.input[0], "pe1_input[0]");
     sc_trace(tf, pe1.input[1], "pe1_input[1]");
     sc_trace(tf, pe1.input[2], "pe1_input[2]");
@@ -701,14 +713,14 @@ int sc_main(int argc, char *argv[])
     stage1_rst.write(true);
     stage3_rst.write(true);
     controller_rst.write(true);
-    in_image_col.write(12);
+    in_image_col.write(18);
     in_image_row.write(18);
     rst.write(true);
     start.write(1);
     input_ch.write(16);
 
-    sc_start(10, SC_NS);
-
+    sc_start(100000, SC_NS);
+    cout << "done" << endl;
     sc_close_vcd_trace_file(tf);
 
     return 0;

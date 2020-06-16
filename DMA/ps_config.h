@@ -29,7 +29,7 @@
 //~~~~~~~~
 //  DRAM
 //~~~~~~~~
-#define MEM_SIZE (0x100000000) //MEM_SIZE (0x2000000)bytes,Configuable, uint32_t mem[MEMSIZE] 
+#define MEM_SIZE (0x100000) //MEM_SIZE (0x2000000)bytes,Configuable, uint32_t mem[MEMSIZE] 
 
 
 #define ROW_BIT (11)
@@ -53,10 +53,7 @@
 //****************
 #define DRAM4_ID (4)
 #define DRAM4_BASE (0X00000000)
-<<<<<<< HEAD
-=======
 #define DRAM4_WEIGHT_BASE (0X04000000)
->>>>>>> hanqun0723
 #define DRAM4_SIZE (MEM_SIZE)
 
 #define DRIVER_READ (0)

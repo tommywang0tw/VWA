@@ -12,7 +12,7 @@ void ACCUMULATOR_FIRST::run_Accumulator(){
         }
     }
 
-    while (1) {
+    while (1) { 
         wait();
         //read input to input registers
         // for(int i=0; i<BUFFER_NUM; i++) {

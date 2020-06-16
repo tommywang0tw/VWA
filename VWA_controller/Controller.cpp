@@ -1,8 +1,8 @@
 #include "Controller.h"
-#define WEIGHT_DRAM_TO_SRAM 0
-#define MOVING_WEIGHT 1
-#define INPUT_DRAM_TO_SRAM 2
-#define MOVING_INPUT 3
+#define INPUT_DRAM_TO_SRAM 0
+#define MOVING_INPUT 1
+#define WEIGHT_DRAM_TO_SRAM 2
+#define MOVING_WEIGHT 3
 #define DO_CONV 4
 
 void CONTROLLER::do_Controller()
@@ -28,7 +28,7 @@ void CONTROLLER::do_Controller()
     write_boundary.write(0);
     bottom_bad_tile = false;
     right_bad_tile = false;
-
+    state = INPUT_DRAM_TO_SRAM;
     total_weight = f_size.read() * f_size.read() * input_ch.read() * f_num.read();
     if (total_weight % (f_size.read() * f_size.read() * 512))
         move_weight_count = 1 + (total_weight / (f_size.read() * f_size.read() * 512));
@@ -40,28 +40,24 @@ void CONTROLLER::do_Controller()
 
     while (1)
     {
-
         wait();
-
         if (start.read())
         {
-            cout << "start!!!!!!" << endl;
+            //cout << "start!!!!!!" << endl;
             out_input_ch.write(input_ch.read());
             out_f_size.write(f_size.read());
-        }
 
+        }
         switch (state)
         {
-
         case INPUT_DRAM_TO_SRAM:
-
             read_in.write(true);
 
             source_address.write(tmp_dram_input_addr);
             target_address.write(tmp_input_addr);
 
             //calculate tile width and tile height
-            if (tmp_tile_width + 7 <= input_size.read())
+            if (tmp_tile_width + 6 <= input_size.read())
                 width = 6;
             else
                 width = input_size.read() - tmp_tile_width + 2; //2 is overlap
@@ -87,29 +83,31 @@ void CONTROLLER::do_Controller()
             tile_inform[2][tile_count] = tmp_input_addr;
             tile_count++;
             state = MOVING_INPUT;
-
             break;
 
         case MOVING_INPUT:
-
+            //cout << "do_MOVING_INPUT" << endl;
             read_in.write(false);
             if (dma_done)
             {
-                if (width == 6)
-                {
-                    tmp_tile_width += 4;
-                    tmp_dram_input_addr += input_size.read() * 4 * 4; //first 4 is 4 column, second 4 is convert to address
-                }
-                else //if width < 6 means one row finish, change to next row and reset tmp_tile_width to 0
-                {
+                cout << "width : " << tmp_tile_width << endl;
+                cout << "height : " << tmp_tile_height << endl;
+                if((width < 6) || (tmp_tile_width + 6 == input_size.read())){  //if width < 6 means one row finish, change to next row and reset tmp_tile_width to 0
                     tmp_tile_width = 0;
                     tmp_tile_height += 7;
                     tmp_dram_input_addr = DRAM4_BASE + tmp_tile_height * 4;
                 }
+                else
+                {
+                        tmp_tile_width += 4;
+                        tmp_dram_input_addr += input_size.read() * 4 * 4; //first 4 is 4 column, second 4 is convert to address
+                }
 
                 tmp_input_addr += width * height * input_ch.read() * 4;
-
-                    if(tmp_dram_input_addr > (DRAM4_BASE + (input_size.read() * input_size.read() * 4))) //all input is finished, go to next state
+                cout << "input move count : " << input_move_count << endl;
+                    if((input_size.read() * input_size.read() * input_ch.read()))
+                        state = WEIGHT_DRAM_TO_SRAM;
+                    else if(tmp_dram_input_addr > (DRAM4_BASE + (input_size.read() * input_size.read() * 4))) //all input is finished, go to next state
                         state = WEIGHT_DRAM_TO_SRAM;
                     else if(((INPUT_SRAM_SIZE/4) - input_move_count) < (7 * 6 * input_ch.read())) //if remain smaller than 1 tile * input_ch, then go to next state_
                         state = WEIGHT_DRAM_TO_SRAM;
@@ -120,7 +118,7 @@ void CONTROLLER::do_Controller()
             break;
 
         case WEIGHT_DRAM_TO_SRAM:
-
+            cout << "do WEIGHT_DRAM_TO_SRAM" << endl;
             if (total_weight < (WEIGHT_SRAM_SIZE / 4)) //weights only need to move one time
             {
                 source_address.write(tmp_dram_weight_addr);
@@ -165,7 +163,8 @@ void CONTROLLER::do_Controller()
             break;
 
         case DO_CONV:
-        {
+        {   
+            cout << "do_Conv" << endl;
             stage3_ctrl1.write(0);
             //handle the right most abnormal tile
             int stop_cycle_count;
@@ -243,8 +242,7 @@ void CONTROLLER::do_Controller()
 
             int num_op_per_tile = input_ch.read()/8;
             int tile_start_col = ( (current_tile_col-1)*num_op_per_tile + (stage3_rst_count-1) + (current_tile_row-1)*num_of_tile_col - 1)*6;
-            switch (cycle_count)
-            {
+            switch (cycle_count){
             case 1: //cycle 1
                 input_read_col = 0;
                 inputS_col.write(input_read_col + tile_start_col);
@@ -506,12 +504,12 @@ void CONTROLLER::do_Controller()
                 tmp_weight_addr += 36;
             if (tmp_weight_addr == (WEIGHT_SRAM_BASE + WEIGHT_SRAM_BANK_SIZE * 4))
                 tmp_weight_addr = WEIGHT_SRAM_BASE;
-            break;
-        }
+            
+        }   break;
+        
         default:
             break;
         }
-
         //====================================================================
     }
 }

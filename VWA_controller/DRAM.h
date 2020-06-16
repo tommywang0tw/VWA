@@ -41,7 +41,7 @@ struct DRAM: sc_module {
         dram_id = DRAM4_ID;
         row_index = 0xffffffff; // Initial value
         for(int i=0; i<(MEM_SIZE/4); i++){
-            mem[i] = 0;
+            mem[i] = i;
         }
         
     }

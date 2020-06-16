@@ -9,7 +9,6 @@ read_row=0;
     while(1){
 
         wait();
-
         if(write_address.read()<3296){
             write_row = 0;
             write_row_cal = write_address.read()/4;

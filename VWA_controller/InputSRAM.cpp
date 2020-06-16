@@ -2,7 +2,7 @@
 
 void InputSRAM::sram(){
     while(1){
-        if(rst){
+        if(!rst){
             for(int i=0; i< WEIGHT_SRAM_BANK;i++)
             {
                 for(int j=0; j < 3;j++)
@@ -20,7 +20,7 @@ void InputSRAM::sram(){
             vaild.write(0);
             sram_mode.write(0);
         }
-        if (dma_write & !done){
+        else if (dma_write & !done){
             sram_mode.write(mode);
             if (mode){
                 for(int i=0; i < 7;i++)
@@ -60,9 +60,11 @@ void InputSRAM::sram(){
             }
         }
         else {
+            
             done.write(0);
             vaild.write(0);
         }      
+        
         wait();
     }
 }

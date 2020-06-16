@@ -20,7 +20,6 @@ void ACCUMULATOR_THIRD::run_Accumulator()
 
     while (1)
     {
-
         wait();
         //read input to input registers
         // for(int i=0; i<BUFFER_NUM; i++) {
