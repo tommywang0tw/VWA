@@ -20,6 +20,7 @@ SC_MODULE(CONTROLLER) {
 	sc_in<bool> rst;			// reset
 
     sc_in<bool> dma_done;           //from dma
+    
     //sc_in<bool> input_done;            //from dma
 /*  ============================================================
             Input Ports
@@ -41,13 +42,13 @@ SC_MODULE(CONTROLLER) {
     sc_out<bool> PE_input_ctrl[8][7]; //for eight PE
     sc_out<sc_uint<32> > out_input_ch;  //output num of input channel to InputSRAM(input ch = filter ch)
     sc_out<sc_uint<32> > out_f_size;    //output filter size to WeightSRAM
-    sc_out<sc_uint<32> > input_col;    //column of input
+    sc_out<sc_uint<32> > inputS_col;    //column of input
     sc_out<sc_uint<32> > stage1_ctrl; //stage 1 control signal
     sc_out<sc_uint<32> > stage3_ctrl1, stage3_ctrl2; //stage 3 control signal
     sc_out<bool> stage1_rst, stage3_rst;
     
     //to DMA
-    sc_out<sc_uint<32> > input_size;
+    sc_out<sc_uint<32> > out_input_size;
     sc_out<sc_uint<32> > tile_height;
     sc_out<sc_uint<32> > tile_width;
     sc_out<bool> read_in;
@@ -55,7 +56,7 @@ SC_MODULE(CONTROLLER) {
     sc_out<sc_uint<32> > source_address;
     sc_out<sc_uint<32> > target_address;
     sc_out<sc_uint<32> > data_length;
-    sc_in<bool> sram_mode;
+    sc_out<bool> sram_mode;
     
 
 
@@ -89,7 +90,7 @@ SC_MODULE(CONTROLLER) {
     sc_uint<32> tmp_input_ch;    //control register
     sc_uint<32> tmp_filter_ch;   //control register
     sc_uint<32> tmp_tile_height;
-    sc_uint<32> tmp_tile_weight;
+    sc_uint<32> tmp_tile_width;
     sc_uint<32> height;
     sc_uint<32> width;
     sc_uint<32> channel;
@@ -109,6 +110,7 @@ SC_MODULE(CONTROLLER) {
     sc_uint<32> input_data_ready;
 
     sc_uint<32> tmp_move_weight_count;  //how many times u need to move weights data
+    sc_uint<32> move_weight_count;
     sc_uint<32> weight_count;
     sc_uint<32> state;
 
