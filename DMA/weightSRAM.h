@@ -15,8 +15,9 @@ SC_MODULE(weightSRAM){
     sc_in<bool> clk;
     sc_in<bool> rst;
 
-    // from host
+    // from hotst
     sc_in<bool> pe_read;
+    sc_in<sc_uint<32> > weight_bank_addr[8];
 
     // from DMA
     sc_in<bool> dma_write;
@@ -37,7 +38,7 @@ SC_MODULE(weightSRAM){
     sc_signal<bool> sram_mode;
     
     // sram
-    uint32_t data_sram[WEIGHT_SRAM_BANK][3][18];
+    uint32_t  weight_sram[WEIGHT_SRAM_BANK][3][192];
     
     void sram();
     

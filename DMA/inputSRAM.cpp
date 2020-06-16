@@ -7,7 +7,7 @@ void inputSRAM::sram(){
             {
                 for(int j=0; j < 3;j++)
                 {   
-                    for(int k=0; j < 18;j++)
+                    for(int k=0; k < 120;k++)
                     {
                         data_sram[i][j][k] = 0;
                     }
@@ -25,14 +25,14 @@ void inputSRAM::sram(){
             if (mode){
                 for(int i=0; i < 7;i++)
                 {
-                    data_sram[(data_f/TILE_WIDTH)%8][i][data_f%TILE_WIDTH] = data[i].read();
+                    data_sram[(data_f/TILE_WIDTH)%8][i][ (data_f/(8*TILE_WIDTH))*TILE_WIDTH + (data_f%TILE_WIDTH)] = data[i].read();
                 }     
                 data_f++;
             }
             else {          
                 for(int i=0; i < 7;i++)
                 {
-                data_sram[(data_f/TILE_WIDTH)%6][i][data_f%TILE_WIDTH] = data[i].read();
+                    data_sram[(data_f/TILE_WIDTH)%6][i][(data_f/(6*TILE_WIDTH))*TILE_WIDTH + (data_f%TILE_WIDTH)] = data[i].read();
                 }
                 data_f++;     
             }    
@@ -45,20 +45,18 @@ void inputSRAM::sram(){
                 {
                     for(int j=0; j < 7;j++)
                     {
-                        data_to_pe[i][j].write(data_sram[i][j][data_b]);
+                        data_to_pe[i][j].write(data_sram[i][j][col_select]);
                     }
                 }
-                data_b++;
             }
             else{
                 for(int i=0; i < 6;i++)
                 {
                     for(int j=0; j < 7;j++)
                     {
-                        data_to_pe[i][j].write(data_sram[i][j][data_b]);
+                        data_to_pe[i][j].write(data_sram[i][j][col_select]);
                     }
                 }
-                data_b++;
             }
         }
         else {

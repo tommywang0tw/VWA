@@ -14,6 +14,7 @@
 #define READ_OUTPUT (3)
 #define WRITE_DRAM (4) 
 #define RESET (5)
+#define WAIT_DRAM_READ (6)
 
 SC_MODULE(DMA){
 
@@ -25,12 +26,13 @@ SC_MODULE(DMA){
         ,m_peq(this , &DMA::peq_cb)
     {
         socket.register_nb_transport_bw(this, &DMA::nb_transport_bw);
-        SC_THREAD(state_register);
+        // SC_THREAD(state_register);
+        // sensitive << clk.pos();
+        SC_THREAD(dma_function);
         sensitive << clk.pos();
-        SC_METHOD(dma_function);
-        sensitive << state << isram_done << wsram_done;
+        // sensitive << state << isram_done << wsram_done;
 
-        last_source = 0xffffffff;
+        
     }
 
     // from host
@@ -41,6 +43,9 @@ SC_MODULE(DMA){
     sc_in<sc_uint<32> > source_address;
     sc_in<sc_uint<32> > target_address;
     sc_in<sc_uint<32> > data_length;
+    sc_in<sc_uint<32> > input_width;
+    sc_in<sc_uint<32> > tile_width;
+    sc_in<sc_uint<32> > tile_high;
     sc_in<bool> sram_mode; // 0-> 6  ;  1 -> 8
 
     // to accelerator
@@ -48,7 +53,6 @@ SC_MODULE(DMA){
     sc_out<bool> busy;
 
     // from input SRAM
-    //sc_in<bool> data_vaild;
     sc_in<bool> isram_done;
     sc_in<bool> wsram_done;
     
@@ -56,6 +60,8 @@ SC_MODULE(DMA){
     sc_out<bool> input_SRAM_write;
     sc_out<sc_uint<32> > to_SRAM_length; // may not use
     sc_out<sc_uint<32> > to_SRAM_data[7];
+    // sc_out<sc_uint<32> > to_SRAM_width;
+    // sc_out<sc_uint<32> > to_SRAM_high;
     sc_out<bool> to_SRAM_mode;
 
     //to Weight SRAM
@@ -65,20 +71,19 @@ SC_MODULE(DMA){
 
     // internel reg
     sc_signal<sc_uint<32> > state;
-    
-    sc_uint<32> source;
+    sc_signal<sc_uint<32> > source;
     sc_uint<32> target;
-    sc_signal<sc_uint<32> > new_target_address;
+    sc_signal<sc_uint<32> > source_base;
     sc_signal<sc_uint<32> > length;
-    sc_signal<sc_uint<32> > len_counter;
-    sc_signal<sc_uint<32> > last_source;
+    sc_signal<sc_uint<32> > tile_count;
+    sc_signal<sc_uint<32> > input_size;
 
     bool dram_done = 0;
     uint32_t data_buffer[9]; 
 
     mm   m_mm;
     
-    void state_register();
+    //void state_register();
     void dma_function();
     void transport(bool rw,uint32_t addr, uint32_t* data, uint32_t length);
     

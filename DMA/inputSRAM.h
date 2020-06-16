@@ -17,6 +17,7 @@ SC_MODULE(inputSRAM){
     
     // from host
     sc_in<bool> pe_read;
+    sc_in<bool> col_select;
 
     // from DMA
     sc_in<bool> dma_write;

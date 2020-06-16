@@ -1,12 +1,69 @@
 #include "DMA.h" 
 
-void DMA::state_register(){
+// void DMA::state_register(){
+//     while(1){
+//         if(rst){
+//             state = 5;
+//         }   
+//         else {
+//             switch (state.read()){
+//                 case IDLE:
+                    
+//                 break;
+
+//                 case READ_DRAM :
+//                     if (dram_done){
+//                         state = WRITE_SRAM;
+//                     }
+//                     else {
+//                         state = READ_DRAM;
+//                     }
+//                 break;
+
+//                 case WRITE_SRAM :
+//                     if ( isram_done | wsram_done ){
+//                         if ( length.read() == 0 ){
+//                             state = RESET;
+//                         }
+//                         else {
+//                             state = READ_DRAM;
+//                         }
+//                     }
+//                     else {
+//                         state = WRITE_SRAM;
+//                     }
+//                 break;
+
+//                 case READ_OUTPUT :
+                    
+//                 break;
+
+//                 case WRITE_DRAM :
+//                     if (dram_done){
+//                         state = RESET;
+//                     }
+//                     else {
+//                         state = WRITE_DRAM;
+//                     }
+//                 break;
+
+//                 case RESET:
+//                     state = IDLE;
+//                 break;
+//             }
+//         }
+//         wait();
+//     }
+    
+// }
+
+void DMA::dma_function(){
     while(1){
         if(rst){
             state = 5;
         }   
         else {
-            switch (state.read()){
+            switch(state.read()){
                 case IDLE:
                     if (read_in){
                         state = READ_DRAM;
@@ -20,25 +77,119 @@ void DMA::state_register(){
                 break;
 
                 case READ_DRAM :
-                    if (dram_done){
-                        state = WRITE_SRAM;
+
+                    input_SRAM_write = 0;
+                    weight_SRAM_write = 0;
+                    state = WAIT_DRAM_READ;
+                    busy = 1;
+                    if (target_address.read() < WEIGHT_SRAM_BASE ){
+                        if (length.read() == 0){
+                            source.write(source_address.read() + input_width.read()*4 );
+                            source_base.write(source_address.read() );
+                            length.write(data_length.read() - tile_high.read()*4 );
+                            input_size.write((input_width.read())*(input_width.read()));
+                            tile_count.write( tile_width.read()*tile_high.read() - tile_high.read());
+                        }
+                        else if ( tile_count.read() == tile_high.read() ){
+                            tile_count.write( (tile_width.read()*tile_high.read()) );
+                            source_base.write(source_base.read() + input_size.read()*4);
+                            source.write(source_base.read() + input_size.read()*4 );
+                            length.write(length.read() - tile_high.read()*4);
+                        }
+                        else {
+                            tile_count.write(tile_count.read() - tile_high.read() );
+                            source.write(source.read() + input_width.read()*4);
+                            length.write(length.read() - tile_high.read()*4);
+                        }
+                        
+                        transport(0,source.read(), data_buffer , tile_high.read()*4 ); 
+
+                        
                     }
                     else {
-                        state = READ_DRAM;
+                        if (length.read() == 0){
+                            if (sram_mode){
+                                source.write(source_address.read() + 36 );
+                                length.write(data_length.read() - 36 );
+                            }
+                            else{
+                                source.write(source_address.read() + 100 );
+                                length.write(data_length.read() - 100 );
+                            }
+                        }
+                        else {
+                            if (sram_mode){
+                                source.write(source.read() + 36 );
+                                length.write(length.read() - 36 ); 
+                            }
+                            else{ 
+                                source.write(source.read() + 100 );
+                                length.write(length.read() - 100 );
+                            }
+                        }
+
+                        transport(0,source.read(), data_buffer , 36 ); 
                     }
+                    
                 break;
 
                 case WRITE_SRAM :
-                    if (isram_done | wsram_done){
-                        state = WRITE_SRAM;
-                    }
-                    else {        
+
+                    
+                    if ( length.read() == 0 ){
                         state = RESET;
                     }
+                    else {
+                        state = READ_DRAM;
+
+                        
+                    }
+                   
+                    if (target_address.read() < WEIGHT_SRAM_BASE )
+                        {   
+                            input_SRAM_write = 1;
+                            to_SRAM_mode = sram_mode;
+                            
+                            for (int i = 0 ; i < 7; i++){
+                                to_SRAM_data[i] = data_buffer[i];
+                            }
+                            if (length.read() == 0){
+                                done = 1;
+                            }
+                        }
+                        else {
+                            weight_SRAM_write = 1;
+                            to_SRAM_mode = sram_mode;
+                            
+                            for (int i = 0 ; i < 9; i++){
+                                weight_data[i] = data_buffer[i];
+                            }
+                            
+                            if (length.read() == 0){
+                                done = 1;
+                            }
+                        }
+                    
+
                 break;
 
                 case READ_OUTPUT :
+                    busy = 1;
+                    // SRAM_read = 1;
+                    // SRAM_write = 0;
                     
+                    // if (data_vaild){
+                    //     data_buffer[length-len_counter] = SRAM_data_in;
+                    //     len_counter --;
+                    // }
+                    // else if (sram_done){
+
+                    // }
+                    // else {
+                    //     to_SRAM_addresss = source;
+                    //     rw_length = length;
+                    //     len_counter = lnength;
+                    // }
                 break;
 
                 case WRITE_DRAM :
@@ -48,92 +199,38 @@ void DMA::state_register(){
                     else {
                         state = WRITE_DRAM;
                     }
+                    transport(1,target_address.read(), data_buffer , data_length.read() );
+                    if(dram_done){
+                        done = 1;
+                    }
                 break;
 
                 case RESET:
                     state = IDLE;
+                    busy = 0;
+                    input_SRAM_write = 0;
+                    weight_SRAM_write = 0;
+                    done = 0;
+                    length = 0 ;
+                    tile_count = 0;
+                    input_size = 0;
+                    for (int i = 0 ; i < 9; i++){
+                        data_buffer[i] = 0;
+                    }
+                break;
+
+                case WAIT_DRAM_READ:
+                    if (dram_done){
+                        state = WRITE_SRAM;
+                    }
+                    else {
+                        state = WAIT_DRAM_READ;
+                    }
                 break;
             }
+
         }
         wait();
-    }
-    
-}
-
-void DMA::dma_function(){
-    switch(state.read()){
-        case IDLE:
-            
-        break;
-
-        case READ_DRAM :
-            busy = 1;
-            transport(0,source_address.read(), data_buffer , data_length.read() ); 
-        break;
-
-        case WRITE_SRAM :
-            
-                if (target_address.read() < WEIGHT_SRAM_BASE )
-                {   
-                    cout << target <<"= ="<<endl;
-                    last_source = source;
-                    input_SRAM_write = 1;
-                    to_SRAM_mode = sram_mode;
-                    to_SRAM_length = length;
-                    for (int i = 0 ; i < 7; i++){
-                        to_SRAM_data[i] = data_buffer[i];
-                    }
-                    if (isram_done | wsram_done){
-                        done = 1;
-                    }
-                }
-                else {
-                    weight_SRAM_write = 1;
-                    to_SRAM_mode = sram_mode;
-                    to_SRAM_length = length;
-                    for (int i = 0 ; i < 9; i++){
-                        weight_data[i] = data_buffer[i];
-                    }
-                    
-                    if (isram_done | wsram_done){
-                        done = 1;
-                    }
-                }
-
-        break;
-
-        case READ_OUTPUT :
-            // busy = 1;
-            // SRAM_read = 1;
-            // SRAM_write = 0;
-            
-            // if (data_vaild){
-            //     data_buffer[length-len_counter] = SRAM_data_in;
-            //     len_counter --;
-            // }
-            // else if (sram_done){
-
-            // }
-            // else {
-            //     to_SRAM_addresss = source;
-            //     rw_length = length;
-            //     len_counter = lnength;
-            // }
-        break;
-
-        case WRITE_DRAM :
-            transport(1,target_address.read(), data_buffer , data_length.read() );
-            if(dram_done){
-                done = 1;
-            }
-        break;
-
-        case RESET:
-            busy = 0;
-            input_SRAM_write = 0;
-            weight_SRAM_write = 0;
-            done = 0;
-        break;
     }
     
 }
