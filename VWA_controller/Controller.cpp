@@ -554,7 +554,7 @@ void CONTROLLER::do_Controller()
         case FINISH_CONV :
 
             cout << "CONGRATULATIONSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-
+            cout << "finish time : " << sc_time_stamp() << endl;
         break;
 
 

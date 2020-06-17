@@ -539,7 +539,17 @@ int sc_main(int argc, char *argv[])
     
 
     //real pe input value
-    sc_trace(tf, weightsram.weight_bank_addr[0][0], "weightsram_address(0)(0)");
+    sc_trace(tf, weightsram.weight_bank_addr[0][0], "weightsram_address(0)(0)");    
+    sc_trace(tf, weightsram.data[0], "weightsram.data[0]");
+    sc_trace(tf, weightsram.data[1], "weightsram.data[1]");
+    sc_trace(tf, weightsram.data[2], "weightsram.data[2]");
+    sc_trace(tf, weightsram.data[3], "weightsram.data[3]");
+    sc_trace(tf, weightsram.data[4], "weightsram.data[4]");
+    sc_trace(tf, weightsram.data[5], "weightsram.data[5]");
+    sc_trace(tf, weightsram.data[6], "weightsram.data[6]");
+    sc_trace(tf, weightsram.data[7], "weightsram.data[7]");
+    sc_trace(tf, weightsram.data[8], "weightsram.data[8]");
+
     //trace input signal
     sc_trace(tf, pe1.input[0], "input[0]");
     sc_trace(tf, pe1.input[1], "input[1]");

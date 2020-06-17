@@ -10,6 +10,7 @@
 #ifndef DRAM_H
 #define DRAM_H
 
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -17,6 +18,20 @@
 #include "general_function.h"
 #include "tlm_utils/simple_target_socket.h"
 #include "tlm_utils/peq_with_cb_and_phase.h"
+
+
+//===input size===
+#define input_WIDTH (18)
+#define input_HEIGHT (18)
+#define input_CHANNEL (16)
+//===filter size===
+#define filter_SIZE (3)
+#define filter_CHANNEL (1)
+//===output size===
+#define output_WIDTH (16)
+#define output_HEIGHT (16)
+
+
 
 // Needed for the simple_target_socket
 #define SC_INCLUDE_DYNAMIC_PROCESSES
@@ -40,9 +55,60 @@ struct DRAM: sc_module {
         socket.register_nb_transport_fw(this, &DRAM::nb_transport_fw);
         dram_id = DRAM4_ID;
         row_index = 0xffffffff; // Initial value
+/*
         for(int i=0; i<(MEM_SIZE/4); i++){
             mem[i] = i;
         }
+*/
+
+
+        //load input
+        int *input = new int[input_WIDTH * input_HEIGHT * input_CHANNEL];
+        int *weight = new int[filter_SIZE * filter_SIZE * input_CHANNEL * filter_CHANNEL];
+        int tmp;
+
+        ifstream fin("data.txt");
+        for(int i = 0; i < (input_WIDTH * input_HEIGHT * input_CHANNEL); i++){
+            fin >> tmp;
+            input[i] = tmp;
+        }
+        
+        //input covert to column major
+        for(int k = 0; k < input_CHANNEL; k++){
+            for (int i = 0; i < input_HEIGHT; i++) {
+                for (int j = 0; j < input_WIDTH; j++) {
+                    int index = j * input_HEIGHT + i;
+                    mem[i * input_HEIGHT + j + (input_HEIGHT * input_WIDTH * k)] = input[index];
+                }
+            }
+        }
+
+
+        for(int i = (input_WIDTH * input_HEIGHT * input_CHANNEL); i < (DRAM4_WEIGHT_BASE/4); i++){
+            mem[i] = 0;
+        }
+
+
+        //load weight
+        ifstream fweight("weight.txt");
+        for(int i = 0; i < (filter_SIZE * filter_SIZE * input_CHANNEL * filter_CHANNEL); i++){
+            fweight >> tmp;
+            weight[i] = tmp;
+            //cout << "index : " << i << " data : " << weight[i] << endl;
+        }
+        
+        //weight covert to column major
+        for(int a = 0; a < filter_CHANNEL; a++){
+            for(int k = 0; k < input_CHANNEL; k++){
+                for (int i = 0; i < filter_SIZE; i++) {
+                    for (int j = 0; j < filter_SIZE; j++) {
+                        int index = j * filter_SIZE + i;
+                        mem[i * filter_SIZE + j + (k * filter_SIZE * filter_SIZE) + (a * input_CHANNEL * filter_SIZE * filter_SIZE)] = weight[index];
+                    }
+                }
+            }
+        }
+
         
     }
 
