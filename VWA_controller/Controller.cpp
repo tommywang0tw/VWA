@@ -108,8 +108,8 @@ void CONTROLLER::do_Controller()
 
             if (dma_done)
             {
-                cout << "width : " << tmp_tile_width << endl;
-                cout << "height : " << tmp_tile_height << endl;
+                //cout << "width : " << tmp_tile_width << endl;
+                //cout << "height : " << tmp_tile_height << endl;
                 if((width < 6) || (tmp_tile_width + 6 == input_size.read())){  //if width < 6 means one row finish, change to next row and reset tmp_tile_width to 0
                     tmp_tile_width = 0;
                     tmp_tile_height += 7;
@@ -138,7 +138,7 @@ void CONTROLLER::do_Controller()
         case WEIGHT_DRAM_TO_SRAM:
 
             read_in.write(true);
-            cout << "do WEIGHT_DRAM_TO_SRAM" << endl;
+            //cout << "do WEIGHT_DRAM_TO_SRAM" << endl;
             if (total_weight < (WEIGHT_SRAM_SIZE / 4)) //weights only need to move one time
             {
                 cout << weight_count << " " << tmp_dram_weight_addr << " " << WEIGHT_SRAM_BASE << endl;
@@ -203,8 +203,8 @@ void CONTROLLER::do_Controller()
                 num_of_tile_col = ((input_size.read() - 6) / 4) + 2; //including of bad tile
                 int bad_tile_col = input_size.read() - ((num_of_tile_col - 2) * 4 + 6) + 2;
                 //cout << "bad_tile_col:" << bad_tile_col << endl;
-                cout << "current_tile_col" << current_tile_col << endl;
-                cout << "num_of_tile_col" << num_of_tile_col << endl;
+                //cout << "current_tile_col" << current_tile_col << endl;
+                //cout << "num_of_tile_col" << num_of_tile_col << endl;
                 if (current_tile_col == num_of_tile_col)
                     tile_col = bad_tile_col;
             }
@@ -479,7 +479,7 @@ void CONTROLLER::do_Controller()
                             write_addr = 0;
                         }
                         current_tile_row++;
-                        cout << "current tile row: " << current_tile_row << endl;
+                        //cout << "current tile row: " << current_tile_row << endl;
                         current_tile_col = 1;
                     }
                     else
@@ -505,7 +505,7 @@ void CONTROLLER::do_Controller()
                         stage3_rst_count++;
                     }
                 }
-                cout << "======finsish 1 convolution=====" << endl;
+                //cout << "======finsish 1 convolution=====" << endl;
                 break;
                 
 
@@ -514,20 +514,20 @@ void CONTROLLER::do_Controller()
             }
 
             //******************************edit*********************************************
-            cout << "tile count : " << tile_count << endl;
-            cout << "need " << ((tile_count * input_ch.read()) / 8 * (f_num.read())) << " times " << endl;
-            cout << "conv_input_time : " << conv_input_time << endl;
+            //cout << "tile count : " << tile_count << endl;
+            //cout << "need " << ((tile_count * input_ch.read()) / 8 * (f_num.read())) << " times " << endl;
+            //cout << "conv_input_time : " << conv_input_time << endl;
             if (conv_input_time == ((tile_count * input_ch.read()) / 8 * (f_num.read())) )//all input in inputSRAM are already used, load next input
             {
                 
                 if((num_of_tile_col * num_of_tile_row * input_ch.read()) <= INPUT_SRAM_SIZE)
                 {
-                    cout << "finisihhhhhhhhhhhhhhhhhh" << endl;
+                    //cout << "finisihhhhhhhhhhhhhhhhhh" << endl;
                     state = FINISH_CONV;
                 }
                 else
                 {
-                    cout << "conv_input_time arrived " << endl;
+                    //cout << "conv_input_time arrived " << endl;
                     state = INPUT_DRAM_TO_SRAM;
                     conv_input_time = 0;
                     tile_count = 0;
@@ -537,7 +537,7 @@ void CONTROLLER::do_Controller()
             }
             else if ((conv_weight_time == (total_weight / move_weight_count / (f_size.read() * f_size.read() * 8))) && (total_weight > (INPUT_SRAM_SIZE/4))) //all weight are already used, load next weight
             {
-                cout << "conv_weight_time arrived " << endl;
+                //cout << "conv_weight_time arrived " << endl;
                 state = WEIGHT_DRAM_TO_SRAM;
                 conv_weight_time = 0;
             }
@@ -554,7 +554,7 @@ void CONTROLLER::do_Controller()
         case FINISH_CONV :
 
             cout << "CONGRATULATIONSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-            cout << "finish time : " << sc_time_stamp() << endl;
+            //cout << "finish time : " << sc_time_stamp() << endl;
         break;
 
 
