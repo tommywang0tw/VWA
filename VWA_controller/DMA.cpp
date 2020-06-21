@@ -65,10 +65,10 @@ void DMA::dma_function(){
         else {
             switch(state.read()){
                 case IDLE:
-                    if (read_in){
+                    if (read_in.read()){
                         state = READ_DRAM;
                     }
-                    else if (write_back){
+                    else if (write_back.read()){
                         state = READ_OUTPUT;
                     }
                     else {
@@ -77,6 +77,7 @@ void DMA::dma_function(){
                 break;
 
                 case READ_DRAM : 
+                    //cout << "source_address: " << source.read() << endl;
                     input_SRAM_write = 0;
                     weight_SRAM_write = 0;
                     state = WAIT_DRAM_READ;
@@ -114,6 +115,7 @@ void DMA::dma_function(){
                     else {
                         if (length.read() == 0){
                             if (sram_mode){
+                                // cout << "source: " << source.read() << endl;
                                 source.write(source_address.read() + 36 );
                                 length.write(data_length.read() - 36 );
                             }
@@ -121,19 +123,22 @@ void DMA::dma_function(){
                                 source.write(source_address.read() + 100 );
                                 length.write(data_length.read() - 100 );
                             }
+                             transport(0,source_address.read(), data_buffer , 36 );
                         }
                         else {
                             if (sram_mode){
                                 source.write(source.read() + 36 );
                                 length.write(length.read() - 36 ); 
+                                // cout << "source: " << source.read() << endl;
                             }
                             else{ 
                                 source.write(source.read() + 100 );
                                 length.write(length.read() - 100 );
                             }
+                            transport(0,source.read(), data_buffer , 36 );
                         }
 
-                        transport(0,source.read(), data_buffer , 36 ); 
+                        
                     }
                     
                 break;
@@ -153,7 +158,7 @@ void DMA::dma_function(){
                     if (target_address.read() < WEIGHT_SRAM_BASE )
                         {   
                             input_SRAM_write = 1;
-                            to_SRAM_mode = sram_mode;
+                            to_SRAM_mode = sram_mode.read();
                             
                             for (int i = 0 ; i < 7; i++){
                                 to_SRAM_data[i] = data_buffer[i];
@@ -164,10 +169,11 @@ void DMA::dma_function(){
                         }
                         else {
                             weight_SRAM_write = 1;
-                            to_SRAM_mode = sram_mode;
+                            to_SRAM_mode = sram_mode.read();
                             
                             for (int i = 0 ; i < 9; i++){
-                                weight_data[i] = data_buffer[i];
+                                weight_data[i].write(data_buffer[i]);
+                                // cout << "write to weight_data[" << i << "]: " << weight_data[i] << endl;
                             }
                             
                             if (length.read() == 0){
@@ -266,6 +272,7 @@ void DMA::transport(bool rw, uint32_t addr, uint32_t* data, uint32_t length){
     trans->set_dmi_allowed( false ); 
     trans->set_response_status( tlm::TLM_INCOMPLETE_RESPONSE );
 
+   cout << "ADDRRRRRRRR" << addr<<endl; 
     if (request_in_progress){
         wait(end_request_event);          
     }

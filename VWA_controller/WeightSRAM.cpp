@@ -37,13 +37,14 @@ void WeightSRAM::sram(){
             done.write(1);
         }
         else if (pe_read){
+            //cout << "weight bank add: " << weight_bank_addr[0].read() << endl;
             vaild.write(1);
             // if (mode){
                 for(int i=0; i< 8;i++)
                 {
                     for(int j=0; j < 3;j++)
-                    {
-                        data_to_pe[i][j].write(weight_sram[(weight_bank_addr[i].read() - WEIGHT_SRAM_BASE) / 4 / 576][j][ ( (weight_bank_addr[i].read() - WEIGHT_SRAM_BASE) / 4 %576 ) /12]);
+                    {   
+                        data_to_pe[i][j].write(weight_sram[(weight_bank_addr[i].read() - WEIGHT_SRAM_BASE) / 4 / 576][j][ ( (weight_bank_addr[i].read() - WEIGHT_SRAM_BASE) / 4 % 576 ) /3]);
                     }
                 }
             // }

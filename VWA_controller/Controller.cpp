@@ -48,7 +48,6 @@ void CONTROLLER::do_Controller()
             //cout << "start!!!!!!" << endl;
             out_input_ch.write(input_ch.read());
             out_f_size.write(f_size.read());
-
         }
         switch (state)
         {
@@ -72,7 +71,7 @@ void CONTROLLER::do_Controller()
             tile_width.write(width);
             tile_height.write(height);
             out_input_size.write(input_size.read());
-            data_length.write(width * height * input_ch.read()); //data length = tile width x tile height x input channel
+            data_length.write(width * height * input_ch.read() * 4); //data length = tile width x tile height x input channel
 
             if (f_size.read() > 0)
                 sram_mode.write(false); //3 x 3 filter size
@@ -80,9 +79,9 @@ void CONTROLLER::do_Controller()
                 sram_mode.write(true); //5 x 5 filter size
 
             input_move_count += width * height * input_ch.read();
-            tile_inform[0][tile_count] = tile_width;
-            tile_inform[1][tile_count] = tile_height;
-            tile_inform[2][tile_count] = tmp_input_addr;
+            // tile_inform[0][tile_count] = tile_width;
+            // tile_inform[1][tile_count] = tile_height;
+            // tile_inform[2][tile_count] = tmp_input_addr;
             tile_count++;
             state = MOVING_INPUT;
             break;
@@ -94,64 +93,67 @@ void CONTROLLER::do_Controller()
             if (((input_size.read() - 6) % 4) == 0)
             {
                 num_of_tile_col = ((input_size.read() - 6) / 4) + 1;
-                unroll_image_col = num_of_tile_col*6;
+                unroll_image_col = num_of_tile_col * 6;
             }
             else
             {
                 num_of_tile_col = ((input_size.read() - 6) / 4) + 2; //including of bad tile
                 int bad_tile_col = input_size.read() - ((num_of_tile_col - 2) * 4 + 6) + 2;
-                unroll_image_col = num_of_tile_col*6 + bad_tile_col;
+                unroll_image_col = num_of_tile_col * 6 + bad_tile_col;
             }
 
             unroll_image_size = unroll_image_col * input_size.read() * input_ch.read();
-            //cout << "unroll image size: " << unroll_image_size << endl; 
+            //cout << "unroll image size: " << unroll_image_size << endl;
 
             if (dma_done)
             {
                 //cout << "width : " << tmp_tile_width << endl;
                 //cout << "height : " << tmp_tile_height << endl;
-                if((width < 6) || (tmp_tile_width + 6 == input_size.read())){  //if width < 6 means one row finish, change to next row and reset tmp_tile_width to 0
+                if ((width < 6) || (tmp_tile_width + 6 == input_size.read()))
+                { //if width < 6 means one row finish, change to next row and reset tmp_tile_width to 0
                     tmp_tile_width = 0;
                     tmp_tile_height += 7;
                     tmp_dram_input_addr = DRAM4_BASE + tmp_tile_height * 4;
                 }
                 else
                 {
-                        tmp_tile_width += 4;
-                        tmp_dram_input_addr += input_size.read() * 4 * 4; //first 4 is 4 column, second 4 is convert to address
+                    tmp_tile_width += 4;
+                    tmp_dram_input_addr += input_size.read() * 4 * 4; //first 4 is 4 column, second 4 is convert to address
                 }
 
                 tmp_input_addr += width * height * input_ch.read() * 4;
-                cout << "input move count : " << input_move_count << endl;
-                    if(input_move_count == unroll_image_size)
-                        state = WEIGHT_DRAM_TO_SRAM;
-                    else if(tmp_dram_input_addr > (DRAM4_BASE + (input_size.read() * input_size.read() * 4))) //all input is finished, go to next state
-                        state = WEIGHT_DRAM_TO_SRAM;
-                    else if(((INPUT_SRAM_SIZE/4) - input_move_count) < (7 * 6 * input_ch.read())) //if remain smaller than 1 tile * input_ch, then go to next state_
-                        state = WEIGHT_DRAM_TO_SRAM;
-                    else  
-                        state = INPUT_DRAM_TO_SRAM;
+                // cout << "unroll img: " << unroll_image_size << endl;
+                // cout << "input move count : " << input_move_count << endl;
+                if (input_move_count == unroll_image_size)
+                    state = WEIGHT_DRAM_TO_SRAM;
+                else if (tmp_dram_input_addr > (DRAM4_BASE + (input_size.read() * input_size.read() * 4))) //all input is finished, go to next state
+                    state = WEIGHT_DRAM_TO_SRAM;
+                else if (((INPUT_SRAM_SIZE / 4) - input_move_count) < (7 * 6 * input_ch.read())) //if remain smaller than 1 tile * input_ch, then go to next state_
+                    state = WEIGHT_DRAM_TO_SRAM;
+                else
+                    state = INPUT_DRAM_TO_SRAM;
             }
 
             break;
 
         case WEIGHT_DRAM_TO_SRAM:
-
             read_in.write(true);
             //cout << "do WEIGHT_DRAM_TO_SRAM" << endl;
             if (total_weight < (WEIGHT_SRAM_SIZE / 4)) //weights only need to move one time
             {
-                cout << weight_count << " " << tmp_dram_weight_addr << " " << WEIGHT_SRAM_BASE << endl;
+                //cout << weight_count << " " << tmp_dram_weight_addr << " " << WEIGHT_SRAM_BASE << endl;
+                // cout << "tmp_dram_weight_addr: " << tmp_dram_weight_addr << endl;
                 source_address.write(tmp_dram_weight_addr);
-                data_length.write(weight_count);
+                data_length.write(weight_count * 4);
                 tmp_move_weight_count--;
                 weight_count = 0;
-                filter_col =  input_ch.read() * f_num.read() / 8;
+                filter_col = input_ch.read() * f_num.read() / 8;
             }
             else if (tmp_move_weight_count > 1 && (total_weight > (WEIGHT_SRAM_SIZE / 4)))
             {
+
                 source_address.write(tmp_dram_weight_addr);
-                data_length.write(f_size.read() * f_size.read()* 512);
+                data_length.write(f_size.read() * f_size.read() * 512 * 4);
                 weight_count -= f_size.read() * f_size.read() * 512;
                 tmp_move_weight_count--;
                 tmp_dram_weight_addr += f_size.read() * f_size.read() * 512;
@@ -159,7 +161,7 @@ void CONTROLLER::do_Controller()
             else if (tmp_move_weight_count == 1 && (total_weight > (WEIGHT_SRAM_SIZE / 4)))
             {
                 source_address.write(tmp_dram_weight_addr);
-                data_length.write(weight_count);
+                data_length.write(weight_count * 4);
                 weight_count = total_weight;
                 tmp_move_weight_count == move_weight_count;
                 tmp_dram_weight_addr = DRAM4_WEIGHT_BASE;
@@ -187,8 +189,8 @@ void CONTROLLER::do_Controller()
             break;
 
         case DO_CONV:
-        {   
-           
+        {
+
             stage3_ctrl1.write(0);
             //handle the right most abnormal tile
             int stop_cycle_count;
@@ -264,18 +266,23 @@ void CONTROLLER::do_Controller()
                 endOfTile = false;
             }
             //cout << "do_Conv : " << cycle_count << endl;
-            int num_op_per_tile = input_ch.read()/8;
-            int tile_start_col = ( (current_tile_col-1)*num_op_per_tile + (stage3_rst_count-1) + (current_tile_row-1)*num_of_tile_col)*6;
-            switch (cycle_count){
+            int num_op_per_tile = input_ch.read() / 8;
+            int tile_start_col = ((current_tile_col - 1) * num_op_per_tile + (stage3_rst_count - 1) + (current_tile_row - 1) * num_of_tile_col*num_op_per_tile ) * 6;
+            cout << "current_tile_col: " << current_tile_col << endl;
+            cout << "num_op_per_tile: " << num_op_per_tile << endl;
+            cout << "stage3_rst_count: " << stage3_rst_count << endl;
+            cout << "current_tile_row: " << current_tile_row << endl;
+            cout << "num_of_tile_col: " << num_of_tile_col << endl;
+            cout << "tile_start_col: " << tile_start_col << endl; 
+            switch (cycle_count)
+            {
             case 1: //cycle 1
                 input_read_col = 0;
                 inputS_col.write(input_read_col + tile_start_col);
                 write_to_pe.write(1);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(0);
-                stage1_rst.write(true);
-                stage3_rst.write(true);
 
                 /*--boundary dont read/write--*/
                 read_boundary.write(0);
@@ -286,16 +293,18 @@ void CONTROLLER::do_Controller()
 
             case 2: //cycle 2
                 input_read_col = 1;
+                stage1_rst.write(true);
+                stage3_rst.write(true);
                 inputS_col.write(input_read_col + tile_start_col);
                 //cout << "tile start col: " << tile_start_col << endl;
                 //cout << "tmp_weight_addr" << tmp_dram_weight_addr << endl;
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + i * WEIGHT_SRAM_BANK_SIZE);
                 break;
 
             case 3: //cycle 3
                 inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 12 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(1);
                 break;
@@ -303,21 +312,21 @@ void CONTROLLER::do_Controller()
             case 4: //cycle 4
                 input_read_col = 2;
                 inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(0);
                 break;
 
             case 5: //cycle 5
                 inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 12 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(2);
                 break;
 
             case 6: //cycle 6
                 inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 24 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(1);
                 break;
@@ -326,7 +335,7 @@ void CONTROLLER::do_Controller()
                 input_read_col = 3;
                 if (input_read_col < tile_col)
                     inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(0);
                 break;
@@ -334,7 +343,7 @@ void CONTROLLER::do_Controller()
             case 8: //cycle 8
                 if (input_read_col < tile_col)
                     inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 12 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(3);
                 if (endOfTile) //boundary read
@@ -344,7 +353,7 @@ void CONTROLLER::do_Controller()
             case 9: //cycle 9
                 if (input_read_col < tile_col)
                     inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 24 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(2);
                 stage3_ctrl2.write(0);
@@ -360,7 +369,7 @@ void CONTROLLER::do_Controller()
                 input_read_col = 4;
                 if (input_read_col < tile_col)
                     inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 12 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(1);
                 stage3_ctrl2.write(4);
@@ -373,7 +382,7 @@ void CONTROLLER::do_Controller()
             case 11: //cycle 11
                 if (input_read_col < tile_col)
                     inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 24 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(3);
 
@@ -390,7 +399,7 @@ void CONTROLLER::do_Controller()
                 input_read_col = 5;
                 if (input_read_col <= tile_col)
                     inputS_col.write(input_read_col + tile_start_col);
-                for(int i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                     weight_bank_addr[i].write(tmp_weight_addr + 24 + i * WEIGHT_SRAM_BANK_SIZE);
                 stage1_ctrl.write(2);
                 stage3_ctrl2.write(1);
@@ -452,6 +461,15 @@ void CONTROLLER::do_Controller()
                 break;
 
             case 17:
+                //calculate next weight address
+                tmp_weight_addr += 36;
+                cout << "tmp_weight_addr: " << tmp_weight_addr << endl;
+                cout << "should stop: " << WEIGHT_SRAM_BASE + filter_col * 36 << endl;
+                if ((tmp_weight_addr == (WEIGHT_SRAM_BASE + WEIGHT_SRAM_BANK_SIZE * 4)) || (tmp_weight_addr == (WEIGHT_SRAM_BASE + filter_col * 36)))
+                {
+                    tmp_weight_addr = WEIGHT_SRAM_BASE;
+                    //cout << "tmp_weight_addr: " << tmp_weight_addr << endl;
+                }
                 cycle_count = 0;
                 conv_input_time++;
                 conv_weight_time++;
@@ -507,7 +525,6 @@ void CONTROLLER::do_Controller()
                 }
                 //cout << "======finsish 1 convolution=====" << endl;
                 break;
-                
 
             default:
                 break;
@@ -517,10 +534,10 @@ void CONTROLLER::do_Controller()
             //cout << "tile count : " << tile_count << endl;
             //cout << "need " << ((tile_count * input_ch.read()) / 8 * (f_num.read())) << " times " << endl;
             //cout << "conv_input_time : " << conv_input_time << endl;
-            if (conv_input_time == ((tile_count * input_ch.read()) / 8 * (f_num.read())) )//all input in inputSRAM are already used, load next input
+            if (conv_input_time == ((tile_count * input_ch.read()) / 8 * (f_num.read()))) //all input in inputSRAM are already used, load next input
             {
-                
-                if((num_of_tile_col * num_of_tile_row * input_ch.read()) <= INPUT_SRAM_SIZE)
+
+                if ((num_of_tile_col * num_of_tile_row * input_ch.read()) <= INPUT_SRAM_SIZE)
                 {
                     //cout << "finisihhhhhhhhhhhhhhhhhh" << endl;
                     state = FINISH_CONV;
@@ -535,28 +552,20 @@ void CONTROLLER::do_Controller()
                     tmp_input_addr = INPUT_SRAM_BASE;
                 }
             }
-            else if ((conv_weight_time == (total_weight / move_weight_count / (f_size.read() * f_size.read() * 8))) && (total_weight > (INPUT_SRAM_SIZE/4))) //all weight are already used, load next weight
+            else if ((conv_weight_time == (total_weight / move_weight_count / (f_size.read() * f_size.read() * 8))) && (total_weight > (INPUT_SRAM_SIZE / 4))) //all weight are already used, load next weight
             {
                 //cout << "conv_weight_time arrived " << endl;
                 state = WEIGHT_DRAM_TO_SRAM;
                 conv_weight_time = 0;
             }
-
-            //calculate next weight address
-            tmp_weight_addr += 36;
-            if ((tmp_weight_addr == (WEIGHT_SRAM_BASE + WEIGHT_SRAM_BANK_SIZE * 4)) || (tmp_weight_addr == (WEIGHT_SRAM_BASE + filter_col * 36)))
-            {
-                tmp_weight_addr = WEIGHT_SRAM_BASE;
-            }
-            
-        }   break;
-        
-        case FINISH_CONV :
-
-            cout << "CONGRATULATIONSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-            //cout << "finish time : " << sc_time_stamp() << endl;
+        }
         break;
 
+        case FINISH_CONV:
+
+            //cout << "CONGRATULATIONSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+            //cout << "finish time : " << sc_time_stamp() << endl;
+            break;
 
         default:
             break;

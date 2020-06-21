@@ -8,6 +8,15 @@ SC_MODULE(InputSRAM){
 
     SC_CTOR(InputSRAM)
     {
+    // data_sram = new int ** [384];
+    // for (int i = 0;i < 384;i++)
+    // {
+    //     data_sram[i] = new int*[7];
+    //     for (int j = 0;j < 7;j++)
+    //     {
+    //         data_sram[i][j] = new int[8];
+    //     }
+    // }
         SC_THREAD(sram);
         sensitive << clk.pos();   
     }
@@ -40,8 +49,7 @@ SC_MODULE(InputSRAM){
     sc_signal<bool> sram_mode;
     
     // sram
-    //int32_t data_sram[INPUT_SRAM_BANK][7][120];
-    sc_int<32> data_sram[INPUT_SRAM_BANK][7][120];
+    sc_int<32> data_sram[INPUT_SRAM_BANK][7][200];
     
     void sram();
    

@@ -79,6 +79,13 @@ void DRAM::peq_cb(tlm::tlm_generic_payload& trans, const tlm::tlm_phase& phase)
 
                 if ( cmd == tlm::TLM_READ_COMMAND ) {
                     memcpy(ptr, &mem[adr/4], len);
+                    // cout << "adr: " << adr << endl;
+                    // cout << "time: " << sc_time_stamp() << endl;
+                    //cout << "mem[" << adr/4 << "] " << mem[adr/4] << endl;
+                    // cout << "mem[18]" << mem[18] << endl;
+                    
+                    cout << "mem[" << adr/4 << "] *****" << mem[adr/4] << endl;
+                    
                 } else if ( cmd == tlm::TLM_WRITE_COMMAND ) {
                     if (byt) {
                         for (unsigned int i = 0; i < len/8; i++) {

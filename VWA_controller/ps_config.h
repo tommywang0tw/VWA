@@ -43,11 +43,11 @@
 	#define tRAS (1)
 	#define magic_delay (1)
 #else  // using DDR4-2400
-	#define tRP (15)
-	#define tRCD (15)
-	#define tCL (15)
-	#define tRAS (39)
-	#define magic_delay (0.8333) // DRAM bus cycle time (ns) (0.8333)
+	#define tRP (0)
+	#define tRCD (0)
+	#define tCL (0)
+	#define tRAS (0)
+	#define magic_delay (0) // DRAM bus cycle time (ns) (0.8333)
 #endif
 
 //****************

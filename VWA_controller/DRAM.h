@@ -82,6 +82,9 @@ struct DRAM: sc_module {
                 }
             }
         }
+        for(int i=0; i < 100; i++)
+            cout << mem[i] << " ";
+        //cout << "mem[18]: " << mem[18] << endl;
 
 
         for(int i = (input_WIDTH * input_HEIGHT * input_CHANNEL); i < (DRAM4_WEIGHT_BASE/4); i++){
@@ -103,7 +106,9 @@ struct DRAM: sc_module {
                 for (int i = 0; i < filter_SIZE; i++) {
                     for (int j = 0; j < filter_SIZE; j++) {
                         int index = j * filter_SIZE + i;
-                        mem[i * filter_SIZE + j + (k * filter_SIZE * filter_SIZE) + (a * input_CHANNEL * filter_SIZE * filter_SIZE)] = weight[index];
+                        mem[i * filter_SIZE + j + (k * filter_SIZE * filter_SIZE) + (a * input_CHANNEL * filter_SIZE * filter_SIZE) + DRAM4_WEIGHT_BASE/4] = weight[index + (k * filter_SIZE * filter_SIZE) + (a * input_CHANNEL * filter_SIZE * filter_SIZE)];
+                        cout << "index : " << index << " weight[index] : " <<weight[index] << endl;
+                        //cout << "mem[" << i * filter_SIZE + j + (k * filter_SIZE * filter_SIZE) + (a * input_CHANNEL * filter_SIZE * filter_SIZE) + DRAM4_WEIGHT_BASE/4 << "]: " << mem[i * filter_SIZE + j + (k * filter_SIZE * filter_SIZE) + (a * input_CHANNEL * filter_SIZE * filter_SIZE) + DRAM4_WEIGHT_BASE/4] << endl;
                     }
                 }
             }

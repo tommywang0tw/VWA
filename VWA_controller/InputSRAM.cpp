@@ -15,7 +15,7 @@ void InputSRAM::sram(){
                     }
                 }
             }
-            cout << "rstrst" << endl;;
+            // cout << "rstrst" << endl;;
             data_f = 0;
 
             data_b = 0;
