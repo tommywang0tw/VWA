@@ -113,7 +113,8 @@ SC_MODULE(CONTROLLER) {
     sc_uint<32> move_weight_count;
     sc_uint<32> weight_count;
     sc_uint<32> state;
-
+    sc_uint<32> counter;
+    
     int unroll_image_col, unroll_image_size;
 
     void do_Controller();

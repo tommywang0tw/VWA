@@ -26,6 +26,7 @@ void CONTROLLER::do_Controller()
     read_addr = 3296; //add 8 each time
     write_addr = 0;   //add 8 each time
     filter_col = 0;
+    counter = 0;
     read_boundary.write(0);
     write_boundary.write(0);
     bottom_bad_tile = false;
@@ -53,7 +54,6 @@ void CONTROLLER::do_Controller()
         switch (state)
         {
         case INPUT_DRAM_TO_SRAM:
-            read_in.write(true);
 
             source_address.write(tmp_dram_input_addr);
             target_address.write(tmp_input_addr);
@@ -73,7 +73,9 @@ void CONTROLLER::do_Controller()
             tile_height.write(height);
             out_input_size.write(input_size.read());
             data_length.write(width * height * input_ch.read()); //data length = tile width x tile height x input channel
-
+            cout << "source addr : " << tmp_dram_input_addr << endl;
+            cout << "target addr : " << tmp_input_addr << endl;
+            cout << "data length : " << width * height * input_ch.read() << endl;
             if (f_size.read() > 0)
                 sram_mode.write(false); //3 x 3 filter size
             else
@@ -85,11 +87,12 @@ void CONTROLLER::do_Controller()
             tile_inform[2][tile_count] = tmp_input_addr;
             tile_count++;
             state = MOVING_INPUT;
+
+            read_in.write(true);
             break;
 
         case MOVING_INPUT:
             //cout << "do_MOVING_INPUT" << endl;
-            read_in.write(false);
 
             if (((input_size.read() - 6) % 4) == 0)
             {
@@ -132,7 +135,8 @@ void CONTROLLER::do_Controller()
                     else  
                         state = INPUT_DRAM_TO_SRAM;
             }
-
+            
+            read_in.write(false);
             break;
 
         case WEIGHT_DRAM_TO_SRAM:
@@ -553,7 +557,7 @@ void CONTROLLER::do_Controller()
         
         case FINISH_CONV :
 
-            cout << "CONGRATULATIONSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+            //cout << "CONGRATULATIONSSSSSSSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
             //cout << "finish time : " << sc_time_stamp() << endl;
         break;
 

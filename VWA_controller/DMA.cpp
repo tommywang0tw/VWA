@@ -77,12 +77,16 @@ void DMA::dma_function(){
                 break;
 
                 case READ_DRAM : 
+                    cout << "dma receive -> source_addr : " << source_address.read() << endl;
+                    cout << "dma receive -> target_addr : " << target_address.read() << endl;
                     input_SRAM_write = 0;
                     weight_SRAM_write = 0;
                     state = WAIT_DRAM_READ;
                     to_SRAM_mode = 1;
                     busy = 1;
                     if (target_address.read() < WEIGHT_SRAM_BASE ){
+                        cout << "DMA write INPUTSRAM" << endl;
+                        cout << "DMA length : " << length.read() << endl;
                         if (length.read() == 0){
                             source.write(source_address.read() + input_width.read()*4 );
                             source_base.write(source_address.read() );
@@ -112,6 +116,7 @@ void DMA::dma_function(){
                         
                     }
                     else {
+                        cout << "DMA write WEIGHTSRAM" << endl;
                         if (length.read() == 0){
                             if (sram_mode){
                                 source.write(source_address.read() + 36 );

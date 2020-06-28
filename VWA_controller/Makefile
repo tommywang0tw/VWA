@@ -1,6 +1,6 @@
 SYSTEMC_DIR = /usr/local/systemc-2.3.3
 PROJECT     = RESULT
-BUILDFLAGS  = -g3
+BUILDFLAGS  = -g
 CXX         = g++
 
 INCFLAGS    = -I. -I${SYSTEMC_DIR}/include
@@ -24,7 +24,7 @@ $(EXE): $(MAIN) $(OBJECTS) $(HEADERS)
 	@echo ""
 %.o:%.cpp %.h
 	@echo "Compiling $< ..."
-	$(CXX) -c $< $(INCFLAGS)
+	$(CXX) -c $< $(INCFLAGS) $(BUILDFLAGS)
 
 clean:
 	rm -f $(EXE)
